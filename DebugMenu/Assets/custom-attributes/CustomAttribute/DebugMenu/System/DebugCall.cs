@@ -11,7 +11,6 @@ namespace DebugMenu
     {
         #region Main
         
-        [MenuItem("Debug/Validate methods")]
         public static void ValidateMethods()
         {
             InitializeDictionnary();
@@ -33,15 +32,15 @@ namespace DebugMenu
             }
         }
 
-        public static T InvokeMethod<T>(string path)
+        public static ReturnType InvokeMethod<ReturnType>(string path)
         {
-            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(T);
+            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(ReturnType);
             
-            var result = default(T);
+            var result = default(ReturnType);
             var method = Methods[path];
             try
             {
-                result = (T)method.Invoke(method.ReflectedType, new object[0]);
+                result = (ReturnType)method.Invoke(method.ReflectedType, new object[0]);
             }
             catch(Exception e)
             {
@@ -66,15 +65,15 @@ namespace DebugMenu
             }
         }
 
-        public static T InvokeMethod<T>(string path, object[] parameters)
+        public static ReturnType InvokeMethod<ReturnType>(string path, object[] parameters)
         {
-            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(T);
+            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(ReturnType);
             
-            var result = default(T);
+            var result = default(ReturnType);
             var method = Methods[path];
             try
             {
-                result = (T)method.Invoke(method.ReflectedType, parameters);
+                result = (ReturnType)method.Invoke(method.ReflectedType, parameters);
             }
             catch(Exception e)
             {
@@ -103,6 +102,11 @@ namespace DebugMenu
 
             return result.ToArray();
         }
+
+        #endregion
+
+
+        #region Utils
 
         private static void InitializeDictionnary()
         {

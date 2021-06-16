@@ -13,6 +13,9 @@ namespace DebugMenu
                 if(!this.ContainsKey(item.Key))
                 {
                     this.Add(item.Key, item.Value);
+                }else
+                {
+                    Debug.LogError($"the key {item.Key} was already in the dictionary and didn't merged the value {item.Value}.");
                 }
             }
         }
