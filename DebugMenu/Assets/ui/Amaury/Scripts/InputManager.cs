@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour
 {
-    #region Unity API
+    #region Exposed
 
-    private void Awake()
-    {
-        gameObject.SetActive(false);
-    }
+    public UnityEvent OnTripleClick;
+    public UnityEvent OnHideDebugMenu;
+
+    #endregion
+
+
+    #region Unity API
 
     private void Update()
     {
         ShowDebugMenuOnClick();
+        HideDebugMenu();
     }
 
     #endregion
@@ -31,7 +36,7 @@ public class InputManager : MonoBehaviour
                 _clickCount++;
                 if (_clickCount >= 3)
                 {
-                    gameObject.SetActive(true);
+                    OnTripleClick.Invoke();
                     _clickCount = 0;
                 }
             }
@@ -41,12 +46,10 @@ public class InputManager : MonoBehaviour
         {
             if (_clickCount == 2)
             {
-                Debug.Log("GrosNul");
                 _clickCount = 0;
             }
             else if (_clickCount == 1)
             {
-                Debug.Log("GrosNul1");
                 _clickCount = 0;
             }
             _clickCount = 0;
@@ -55,7 +58,10 @@ public class InputManager : MonoBehaviour
 
     private void HideDebugMenu()
     {
-
+        if (Input.GetButtonDown("ExitDebugMenu"))
+        {
+            OnHideDebugMenu.Invoke();
+        }
     }
 
 
