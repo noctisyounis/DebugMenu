@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ui/Amaury/Scenes/UI-Amaury.unity
+    guid: e1a3c8ed6c681724d96454e2bc706413
+  - enabled: 1
+    path: Assets/FinalDebugMenu.unity
+    guid: 2cd3ab4556185f244915ddfc9ad1116e
   m_configObjects: {}
