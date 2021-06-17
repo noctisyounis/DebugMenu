@@ -4,21 +4,29 @@ using UnityEngine;
 
 using DebugMenu;
 
+using static UnityEngine.Debug;
+
 public class DebugDemo : MonoBehaviour
 {
     public void OnClick()
     {
+        Log($"<color=orange>How to interface with API Examples</color>");
+
+        Log($"<color=orange>Always Call Static method</color>");
         DebugCall.InvokeMethod("Debug/Test/Static");
 
-        Debug.Log(DebugCall.InvokeMethod<int>("Debug/Test/Return"));
+        Log($"<color=orange>Call a method with a return</color>");
+        Log(DebugCall.InvokeMethod<int>("Debug/Test/Return"));
 
-        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[] { "5", 4 });
+        Log($"You can Set your parameters");
+        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[] { "your string", 4 });
 
-        Debug.Log(DebugCall.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[] { "Bonjour" }));
+        Log($"You can set your parameters and even have a return");
+        Log(DebugCall.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[] { "Bonjour" }));
     }
 
     [DebugMenu("Debug/Test/Instance")]
-    public static void HelloWorld()
+    public void HelloWorld()
     {
         Debug.Log("Hello World from instance");
     }
