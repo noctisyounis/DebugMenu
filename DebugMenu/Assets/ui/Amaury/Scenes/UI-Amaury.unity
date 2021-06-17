@@ -151,6 +151,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 457743506}
+  - {fileID: 908446770}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -283,34 +284,34 @@ MonoBehaviour:
   OnTripleClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2114377726}
-        m_TargetAssemblyTypeName: DebugMenuVisibility, Assembly-CSharp
-        m_MethodName: Show
-        m_Mode: 1
+      - m_Target: {fileID: 908446771}
+        m_TargetAssemblyTypeName: SceneFacade, Assembly-CSharp
+        m_MethodName: LoadSceneAdditive
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: FinalDebugMenu
           m_BoolArgument: 1
         m_CallState: 2
   OnHideDebugMenu:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2114377726}
-        m_TargetAssemblyTypeName: DebugMenuVisibility, Assembly-CSharp
-        m_MethodName: Hide
-        m_Mode: 1
+      - m_Target: {fileID: 908446771}
+        m_TargetAssemblyTypeName: SceneFacade, Assembly-CSharp
+        m_MethodName: RemoveAdditiveScene
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: FinalDebugMenu
           m_BoolArgument: 0
         m_CallState: 2
---- !u!1 &1655543511
+--- !u!1 &908446769
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -318,29 +319,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1655543512}
+  - component: {fileID: 908446770}
+  - component: {fileID: 908446771}
   m_Layer: 0
-  m_Name: '[UI]'
+  m_Name: SceneManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1655543512
+--- !u!4 &908446770
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1655543511}
+  m_GameObject: {fileID: 908446769}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 2114377725}
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Children: []
+  m_Father: {fileID: 3353482}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &908446771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908446769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa7abf3964dccc4daa2b41b41c67eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1824554921
 GameObject:
   m_ObjectHideFlags: 0
@@ -434,46 +447,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &2114377724
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2114377725}
-  - component: {fileID: 2114377726}
-  m_Layer: 0
-  m_Name: DebugMenu
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2114377725
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2114377724}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1655543512}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2114377726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2114377724}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df8686e23718f6346bbf10d3629cedcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
