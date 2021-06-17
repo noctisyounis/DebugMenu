@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class ShowFps : ImmediateModeShapeDrawer
 {
+
     #region Utils
 
     public static void DisplayFps()
