@@ -1,9 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class NavigationManager : MonoBehaviour
 {
+
+    #region exposed
+    [SerializeField]
+    private EventSystem _event;
+    #endregion
     #region Unity API
 
 
@@ -11,7 +16,10 @@ public class NavigationManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Submit"))
         {
+
             Debug.Log("J'avance");
+
+            _event.firstSelectedGameObject = DebugMenu.m_menuDebugButton[0].gameObject;
         }
 
         if(Input.GetButtonDown("Cancel"))
