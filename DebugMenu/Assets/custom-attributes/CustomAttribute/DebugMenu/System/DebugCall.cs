@@ -10,7 +10,7 @@ namespace DebugMenu
     public class DebugCall
     {
         #region Main
-        
+
         public static void ValidateMethods()
         {
             InitializeDictionnary();
@@ -19,14 +19,14 @@ namespace DebugMenu
 
         public static void InvokeMethod(string path)
         {
-            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return;
-            
+            if (!Methods.ContainsKey(path) || Methods[path].IsPrivate) return;
+
             var method = Methods[path];
             try
             {
                 method.Invoke(method.ReflectedType, new object[0]);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.LogError(e.StackTrace);
             }
@@ -34,15 +34,15 @@ namespace DebugMenu
 
         public static ReturnType InvokeMethod<ReturnType>(string path)
         {
-            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(ReturnType);
-            
+            if (!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(ReturnType);
+
             var result = default(ReturnType);
             var method = Methods[path];
             try
             {
                 result = (ReturnType)method.Invoke(method.ReflectedType, new object[0]);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.LogError(e.StackTrace);
             }
@@ -52,14 +52,14 @@ namespace DebugMenu
 
         public static void InvokeMethod(string path, object[] parameters)
         {
-            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return;
-            
+            if (!Methods.ContainsKey(path) || Methods[path].IsPrivate) return;
+
             var method = Methods[path];
             try
             {
                 method.Invoke(method.ReflectedType, parameters);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.LogError(e.StackTrace);
             }
@@ -67,15 +67,15 @@ namespace DebugMenu
 
         public static ReturnType InvokeMethod<ReturnType>(string path, object[] parameters)
         {
-            if(!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(ReturnType);
-            
+            if (!Methods.ContainsKey(path) || Methods[path].IsPrivate) return default(ReturnType);
+
             var result = default(ReturnType);
             var method = Methods[path];
             try
             {
                 result = (ReturnType)method.Invoke(method.ReflectedType, parameters);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.LogError(e.StackTrace);
             }
@@ -88,13 +88,18 @@ namespace DebugMenu
             return Methods.Keys.ToArray();
         }
 
+        public static MethodInfo GetMethodInfoAt(string path)
+        {
+            return Methods[path];
+        }
+
         public static string[] GetQuickPaths()
         {
             var result = new List<string>();
 
             foreach (var item in Methods)
             {
-                if(item.Value.GetCustomAttribute<DebugMenuAttribute>().IsQuickMenu)
+                if (item.Value.GetCustomAttribute<DebugMenuAttribute>().IsQuickMenu)
                 {
                     result.Add(item.Key);
                 }
@@ -103,8 +108,7 @@ namespace DebugMenu
             return result.ToArray();
         }
 
-        #endregion
-
+        #endregion Main
 
         #region Utils
 
@@ -120,7 +124,7 @@ namespace DebugMenu
                             .SelectMany(classType => classType.GetMethods())
                             .Where(classMethod => classMethod.GetCustomAttributes().OfType<DebugMenuAttribute>().Any())
                             .ToDictionary(methodInfo => methodInfo.GetCustomAttributes().OfType<DebugMenuAttribute>().First<DebugMenuAttribute>().Path);
-                              
+
                 _methods.Merge(assemblyDictionary);
             }
         }
@@ -130,15 +134,16 @@ namespace DebugMenu
             var validCount = 0;
             var initialMethodCount = _methods.Count;
 
-            for (int i = _methods.Count-1; i >= 0; i--)
+            for (int i = _methods.Count - 1; i >= 0; i--)
             {
                 var item = _methods.Keys.ToArray()[i];
 
-                if(!_methods[item].IsStatic)
+                if (!_methods[item].IsStatic)
                 {
                     Debug.LogError($"<color=orange>{_methods[item].Name} of class {_methods[item].ReflectedType} must be static</color>");
                     _methods.Remove(item);
-                }else
+                }
+                else
                 {
                     validCount++;
                 }
@@ -154,8 +159,7 @@ namespace DebugMenu
             _assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
         }
 
-        #endregion
-
+        #endregion Utils
 
         #region Private
 
@@ -165,7 +169,7 @@ namespace DebugMenu
         {
             get
             {
-                if(_assemblies == null)
+                if (_assemblies == null)
                 {
                     InitializeAssemblies();
                 }
@@ -173,12 +177,14 @@ namespace DebugMenu
                 return _assemblies;
             }
         }
+
         private static MergeableDictionary<string, MethodInfo> _methods;
+
         private static MergeableDictionary<string, MethodInfo> Methods
         {
-            get 
+            get
             {
-                if(_methods == null)
+                if (_methods == null)
                 {
                     InitializeDictionnary();
                     ValidateDictionary();
@@ -188,7 +194,6 @@ namespace DebugMenu
             }
         }
 
-        #endregion
-
+        #endregion Private
     }
 }

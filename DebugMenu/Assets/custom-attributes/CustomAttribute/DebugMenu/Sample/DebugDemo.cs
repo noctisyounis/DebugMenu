@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using DebugMenu;
 
 public class DebugDemo : MonoBehaviour
@@ -8,9 +9,12 @@ public class DebugDemo : MonoBehaviour
     public void OnClick()
     {
         DebugCall.InvokeMethod("Debug/Test/Static");
+
         Debug.Log(DebugCall.InvokeMethod<int>("Debug/Test/Return"));
-        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[]{"5"});
-        Debug.Log(DebugCall.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[]{"Bonjour"}));
+
+        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[] { "5" });
+
+        Debug.Log(DebugCall.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[] { "Bonjour" }));
     }
 
     [DebugMenu("Debug/Test/Instance")]
@@ -20,9 +24,11 @@ public class DebugDemo : MonoBehaviour
     }
 
     [DebugMenu("Debug/Test/Static")]
-    public static void HelloStaticWorld()
+    public static string HelloStaticWorld()
     {
-        Debug.Log("Hello World from Static");
+        string result = "Hello World from Static";
+        Debug.Log(result);
+        return result;
     }
 
     [DebugMenu("Debug/Test/Return")]
