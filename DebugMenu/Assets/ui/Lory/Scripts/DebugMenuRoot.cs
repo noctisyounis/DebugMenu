@@ -27,17 +27,7 @@ public class DebugMenuRoot : MonoBehaviour
     {
         m_instance = this;
         _menus = new Dictionary<string, DebugMenu>();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U) && !_wasGenerate)
-        {
-            var rootedPaths = LinkPathsToRoot(new List<string>(testArray));
-            GeneratePanel(rootedPaths, 0);
-            _wasGenerate = true;
-            DisplayPanel(_debugMenuName);
-        }
+        StartGenerate();
     }
 
     #endregion
@@ -116,6 +106,17 @@ public class DebugMenuRoot : MonoBehaviour
     public void InvokeMethod(string path)
     {
         Debug.Log($"Action At {path}");
+    }
+
+    private void StartGenerate()
+    {
+        if (!_wasGenerate)
+        {
+            var rootedPaths = LinkPathsToRoot(new List<string>(testArray));
+            GeneratePanel(rootedPaths, 0);
+            _wasGenerate = true;
+            DisplayPanel(_debugMenuName);
+        }
     }
 
     #endregion
