@@ -5,6 +5,8 @@ public class DebugButton : MonoBehaviour
 {
     #region Exposed
 
+    public string m_path;
+
     [SerializeField]
     private Image _arrowHover;
     [SerializeField]
@@ -17,7 +19,7 @@ public class DebugButton : MonoBehaviour
 
     private void Awake()
     {
-        _arrowHover.rectTransform.position = _parentButton.rect.position + new Vector2(-30, 20);
+        _arrowHover.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -35,14 +37,29 @@ public class DebugButton : MonoBehaviour
         DebugMenu.m_menuDebugButton.Remove(GetComponent<Button>());
     }
 
+    #endregion
+
+
+    #region Main
+
+    public void OnClick()
+    {
+        DebugMenuRoot.m_instance.TryDisplayPanel(m_path);
+    }
+
+    #endregion
+
+
+    #region Utils
+
     public void IndicateHover()
     {
-        _currentInstantiate = Instantiate(_arrowHover, _parentButton);
+        _arrowHover.gameObject.SetActive(true);
     }
 
     public void IndicateNoHover()
     {
-        Destroy(_currentInstantiate);
+        _arrowHover.gameObject.SetActive(false);
     }
 
     #endregion

@@ -4,21 +4,29 @@ using UnityEngine.UI;
 
 public class DebugMenu : MonoBehaviour
 {
-    #region Testing
-
-    private string[] testArray = new string[] { "Gizmo/Afficher", "FrameRate", "OptionsCharacters/heal", "OptionsCharacters/boosts", "Quitter" };
-
-
-    private void Start()
-    {
-        GenerateButton(testArray);
-    }
-
-    #endregion 
-
     #region Exposed
 
     public static List<Button> m_menuDebugButton = new List<Button>();
+    public int m_depth;
+    public List<string> Paths { get; set; }
+
+    public string Title 
+    { 
+        get => _headerTitle.text; 
+
+        set
+        {
+            _headerTitle.text = value;
+        }
+    
+    }
+
+    public string ParentPath
+    {
+        get => _parent;
+        set => _parent = value;
+    }
+
 
     [SerializeField]
     private Text _headerTitle;
@@ -27,7 +35,9 @@ public class DebugMenu : MonoBehaviour
     [SerializeField]
     private RectTransform _prefabButton;
     [SerializeField]
-    private Transform _parentMenuButton;
+    private RectTransform _parentMenuButton;
+    [SerializeField]
+    private RectTransform _mask;
 
     [SerializeField]
     private float _textSpacing;
@@ -45,6 +55,28 @@ public class DebugMenu : MonoBehaviour
     private void Update()
     {
         ResponsiveMenu();
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            ReturnToParent();
+        }
+    }
+
+    #endregion
+
+
+    #region Main
+
+    public void StartGenerate()
+    {
+        if (_isGenerated) return;
+        _isGenerated = true;
+        GenerateButton(Paths.ToArray());
+    }
+
+    public void ReturnToParent()
+    {
+        if (ParentPath.Length == 0) return;
+        DebugMenuRoot.m_instance.TryDisplayPanel(ParentPath);
     }
 
     #endregion
@@ -64,32 +96,67 @@ public class DebugMenu : MonoBehaviour
             }
         }
 
-        if(m_menuDebugButton.Count < 20)
+        var sizeMenu = _prefabButton.rect.height * m_menuDebugButton.Count;
+        if (m_menuDebugButton.Count < 20)
         {
-            var sizeMenu = _prefabButton.rect.height * m_menuDebugButton.Count;
             _backgroundMenu.sizeDelta = new Vector2(_backgroundMenu.rect.width, _headerTitle.rectTransform.rect.height + sizeMenu + _textSpacing);
+            _mask.sizeDelta = new Vector2(_backgroundMenu.rect.width, sizeMenu);
         }
+        _parentMenuButton.sizeDelta = new Vector2(_parentMenuButton.rect.width, sizeMenu);
     }
 
-    private void GenerateButton(string[] menusArray)
+    private void GenerateButton(string[] paths)
     {
-        HashSet<string> firstmenu = new HashSet<string>();
-        for (int i = 0; i < menusArray.Length; i++)
+        Dictionary<string, string> firstmenu = new Dictionary<string, string>();
+        List<string> otherPanel = new List<string>();
+
+        for (int i = 0; i < paths.Length; i++)
         {
-            string[] commands = menusArray[i].Split('/');
-            firstmenu.Add(commands[0]);
+            string[] commands = paths[i].Split('/');
+            if (!firstmenu.ContainsKey(commands[m_depth + 1]))
+            {
+                firstmenu.Add(commands[m_depth + 1], BuildNextPath(commands));
+            }
+
+            if (commands.Length - m_depth > 2)
+            {
+                otherPanel.Add(paths[i]);
+            }
         }
-        foreach (string name in firstmenu)
+        foreach (var item in firstmenu)
         {
-            _prefabButton.GetComponent<Button>().GetComponentInChildren<Text>().text = name;
+            _prefabButton.GetComponent<Button>().GetComponentInChildren<Text>().text = item.Key;
+            _prefabButton.GetComponent<DebugButton>().m_path = item.Value;
             GameObject.Instantiate(_prefabButton, _parentMenuButton);
         }
+
+        DebugMenuRoot.m_instance.GeneratePanel(otherPanel, m_depth + 1);
+    }
+
+    private string BuildNextPath(string[] paths)
+    {
+        var result = "";
+
+        for (int i = 0; i <= m_depth + 1; i++)
+        {
+            if (i != 0)
+            {
+                result += "/";
+            }
+            result += paths[i];
+        }
+
+        return result;
     }
 
     #endregion
 
 
     #region Private
+
+    private string _parent;
+
+    private bool _isGenerated;
 
     #endregion
 }
