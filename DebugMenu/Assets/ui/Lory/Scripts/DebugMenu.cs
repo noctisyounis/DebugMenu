@@ -4,7 +4,21 @@ using UnityEngine.UI;
 
 public class DebugMenu : MonoBehaviour
 {
+    #region Testing
+
+    private string[] testArray = new string[] { "Gizmo/Afficher", "FrameRate", "OptionsCharacters/heal", "OptionsCharacters/boosts", "Quitter" };
+
+
+    private void Start()
+    {
+        GenerateButton(testArray);
+    }
+
+    #endregion 
+
     #region Exposed
+
+    public static List<Button> m_menuDebugButton = new List<Button>();
 
     [SerializeField]
     private Text _headerTitle;
@@ -14,8 +28,6 @@ public class DebugMenu : MonoBehaviour
     private RectTransform _prefabButton;
     [SerializeField]
     private Transform _parentMenuButton;
-    [SerializeField]
-    private List<Button> _menuDebugButton;
 
     [SerializeField]
     private float _textSpacing;
@@ -25,14 +37,14 @@ public class DebugMenu : MonoBehaviour
 
     #region Unity API
 
-    private void Awake()
+    private void OnGUI()
     {
-        _menuDebugButton = new List<Button>();
+        GUILayout.Button($"{m_menuDebugButton.Count}");
     }
 
     private void Update()
     {
-        responsiveMenu();
+        ResponsiveMenu();
     }
 
     #endregion
@@ -40,20 +52,38 @@ public class DebugMenu : MonoBehaviour
 
     #region Utils
 
-    private void responsiveMenu()
+    private void ResponsiveMenu()
     {
         var addToList = _parentMenuButton.GetComponentsInChildren<Button>();
 
         foreach (var element in addToList)
         {
-            if (!_menuDebugButton.Contains(element))
+            if (!m_menuDebugButton.Contains(element))
             {
-                _menuDebugButton.Add(element);
+                m_menuDebugButton.Add(element);
             }
         }
 
-        var sizeMenu = _prefabButton.rect.height * _menuDebugButton.Count;
-        _backgroundMenu.sizeDelta = new Vector2(_backgroundMenu.rect.width, _headerTitle.rectTransform.rect.height + sizeMenu + _textSpacing);
+        if(m_menuDebugButton.Count < 20)
+        {
+            var sizeMenu = _prefabButton.rect.height * m_menuDebugButton.Count;
+            _backgroundMenu.sizeDelta = new Vector2(_backgroundMenu.rect.width, _headerTitle.rectTransform.rect.height + sizeMenu + _textSpacing);
+        }
+    }
+
+    private void GenerateButton(string[] menusArray)
+    {
+        HashSet<string> firstmenu = new HashSet<string>();
+        for (int i = 0; i < menusArray.Length; i++)
+        {
+            string[] commands = menusArray[i].Split('/');
+            firstmenu.Add(commands[0]);
+        }
+        foreach (string name in firstmenu)
+        {
+            _prefabButton.GetComponent<Button>().GetComponentInChildren<Text>().text = name;
+            GameObject.Instantiate(_prefabButton, _parentMenuButton);
+        }
     }
 
     #endregion

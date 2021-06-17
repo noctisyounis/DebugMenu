@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-
+using UnityEngine.EventSystems;
 public class DebugUIManager : MonoBehaviour
 {
 
@@ -13,43 +13,58 @@ public class DebugUIManager : MonoBehaviour
 
     private void Start()
     {
-        OnShow(testArray);
+        split(testArray);
     }
 
     #endregion
 
 
     #region Exposed
+
     [SerializeField]
     private GameObject _buttonPrefab;
     [SerializeField]
     private GameObject _panelPrefab;
-   
-    public static string[] MenuList;
+
+    [SerializeField]
+    private EventSystem _event;
+      
     #endregion
 
 
     #region methods
 
-    private void OnShow(string[] menusArray )
+    private void split(string[] menusArray )
     {
-        MenuList = menusArray;
+        bool firstButtonSelected = false;
         HashSet<string> firstmenu = new HashSet<string>();
         for (int i = 0; i < menusArray.Length; i++)
         {
             string[] commands = menusArray[i].Split('/');
-            firstmenu.Add(commands[0]);
+           
+           firstmenu.Add(commands[0]);
         }
+        
 
         foreach (string name in firstmenu)
         {
             _buttonPrefab.GetComponent<Button>().GetComponentInChildren<Text>().text = name;
-            GameObject.Instantiate(_buttonPrefab, _transform);
-
+            GameObject button =GameObject.Instantiate(_buttonPrefab, _transform);
+            if (!firstButtonSelected)
+            {
+                firstButtonSelected = true;
+                _event.firstSelectedGameObject = button;
+            }
         }
 
-
+         
     }
+
+
+
+
+    
+
 
 
     #endregion
@@ -68,8 +83,6 @@ public class DebugUIManager : MonoBehaviour
     #region Private
 
     private Transform _transform;
-
-    private Dictionary<string,GameObject> _commandsArray;
 
     #endregion
 }
