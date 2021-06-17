@@ -4,35 +4,84 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using DebugMenu;
+using System;
+
+using systemToTest = DebugMenu;
 
 public class UnitTests : MonoBehaviour
 {
-    #region InvokeMethod Debug/Test/Static
-
-    /// <summary>
-    ///     InvokeMethod
-    ///
-    /// correct path :
-    /// path = "Debug/Test/Static"
-    /// </summary>
-    [Test]
-    public static void InvokeVoidMethod()
-    {
-        string path = "Enter your path to test static here";
-
-        Assert.AreEqual(path, "Debug/Test/Static");
-    }
-
-    #endregion InvokeMethod Debug/Test/Static
-
-    #region Invoke Method < type > ( path )
+    #region Validate the ValidateMethods
 
     [Test]
-    public static void InvokeVoidMethod(string type, string path)
+    public static void ValidateTheValidation()
     {
+        // it's false because in DebugDemo we have a not Static Method that we writed to show how to not use :)
+
+        DebugCall.ValidateMethods();
     }
 
-    #endregion Invoke Method < type > ( path )
+    #endregion Validate the ValidateMethods
+
+    #region Valid me that path
+
+    [Test]
+    public static void ValidAPath()
+    {
+        // path to enter :
+        // A path should be in the dictionnary
+        // i.e. : string path = "Debug/Test/Static";
+
+        string path = "Enter your static path to test here";
+
+        string[] myPathsFromGetPaths = DebugCall.GetPaths();
+        List<string> myPathsToTest = new List<string>();
+
+        bool result = false;
+
+        for (int i = 0; i < myPathsFromGetPaths.Length; i++)
+        {
+            myPathsToTest.Add(myPathsFromGetPaths[i]);
+        }
+
+        for (int i = 0; i < myPathsToTest.Count; i++)
+        {
+            if (myPathsToTest[i] == path)
+            {
+                result = true;
+            }
+        }
+
+        Assert.IsTrue(result);
+    }
+
+    #endregion Valid me that path
+
+    #region Valid me that Primitive type
+
+    [Test]
+    public static void ValidAPrimitiveType()
+    {
+        // Set a type you want to test
+        int myTypeToTest = 1;
+
+        var result = myTypeToTest.GetType();
+
+        Assert.IsTrue(result.IsPrimitive);
+    }
+
+    #endregion Valid me that Primitive type
+
+    #region Wait Parameters To valid
+
+    // hum ... how to validate that anything isn't anything UwU
+
+    // need to wait other invokemethod custom tools to unit test those one by one
+
+    #endregion Wait Parameters To valid
+
+    /*
+
+    #region Testrunner Example
 
     // A Test behaves as an ordinary method
     [Test]
@@ -50,4 +99,8 @@ public class UnitTests : MonoBehaviour
         // Use yield to skip a frame.
         yield return null;
     }
+
+    #endregion Testrunner Example
+
+    */
 }

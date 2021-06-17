@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
-using UnityEditor;
 
 namespace DebugMenu
 {
@@ -16,6 +15,8 @@ namespace DebugMenu
             InitializeDictionnary();
             ValidateDictionary();
         }
+
+        #region Invoke Method
 
         public static void InvokeMethod(string path)
         {
@@ -38,6 +39,7 @@ namespace DebugMenu
 
             var result = default(ReturnType);
             var method = Methods[path];
+
             try
             {
                 result = (ReturnType)method.Invoke(method.ReflectedType, new object[0]);
@@ -83,6 +85,10 @@ namespace DebugMenu
             return result;
         }
 
+        #endregion Invoke Method
+
+        #region Get Data
+
         public static string[] GetPaths()
         {
             return Methods.Keys.ToArray();
@@ -107,6 +113,8 @@ namespace DebugMenu
 
             return result.ToArray();
         }
+
+        #endregion Get Data
 
         #endregion Main
 

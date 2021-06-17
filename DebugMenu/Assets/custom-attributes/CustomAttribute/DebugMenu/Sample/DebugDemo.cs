@@ -12,13 +12,13 @@ public class DebugDemo : MonoBehaviour
 
         Debug.Log(DebugCall.InvokeMethod<int>("Debug/Test/Return"));
 
-        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[] { "5" });
+        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[] { "5", 4 });
 
         Debug.Log(DebugCall.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[] { "Bonjour" }));
     }
 
     [DebugMenu("Debug/Test/Instance")]
-    public void HelloWorld()
+    public static void HelloWorld()
     {
         Debug.Log("Hello World from instance");
     }
@@ -38,9 +38,9 @@ public class DebugDemo : MonoBehaviour
     }
 
     [DebugMenu("Debug/Test/Parameter")]
-    public static void PrintParam(string value)
+    public static void PrintParam(string value, int myvalue)
     {
-        Debug.Log(value);
+        Debug.Log($"value string = {value}, int value = {myvalue}");
     }
 
     [DebugMenu("Debug/Test/Parameter And Return")]
