@@ -47,11 +47,6 @@ public class DebugMenu : MonoBehaviour
 
     #region Unity API
 
-    private void OnGUI()
-    {
-        GUILayout.Button($"{m_menuDebugButton.Count}");
-    }
-
     private void Update()
     {
         ResponsiveMenu();
