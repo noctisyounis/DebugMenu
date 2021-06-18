@@ -1,9 +1,8 @@
 using Shapes;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Profiling;
 using UnityEngine;
 using System.Text;
+using DebugAttribute;
 
 public class MemoryProfiler : ImmediateModeShapeDrawer
 {
@@ -30,6 +29,7 @@ public class MemoryProfiler : ImmediateModeShapeDrawer
 
     #region Utils
 
+    [DebugMenu("Settings/Performances/Memory Profiler")]
     public static void SetShowProfiler()
     {
         _isShowingProfiler = !_isShowingProfiler;
