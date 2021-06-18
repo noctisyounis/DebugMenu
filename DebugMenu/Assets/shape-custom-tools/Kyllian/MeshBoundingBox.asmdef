@@ -1,5 +1,5 @@
 {
-    "name": "ColliderBoundingBox",
+    "name": "MeshBoundingBox",
     "rootNamespace": "",
     "references": [
         "GUID:24bd51b4ce6b67146acc27473c671194",
