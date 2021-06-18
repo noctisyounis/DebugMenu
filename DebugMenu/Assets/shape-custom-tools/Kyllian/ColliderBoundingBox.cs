@@ -46,7 +46,7 @@ public class ColliderBoundingBox : MonoBehaviour
     {
         List<Collider> collidersInScene = new List<Collider>();
 
-        foreach (var collider in Resources.FindObjectsOfTypeAll(typeof(Collider)) as Collider[])
+        foreach (var collider in FindObjectsOfTypeAll(typeof(Collider)) as Collider[])
         {
             collidersInScene.Add(collider);
         }
