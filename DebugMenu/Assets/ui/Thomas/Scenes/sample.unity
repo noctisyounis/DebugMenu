@@ -304,7 +304,6 @@ MonoBehaviour:
   btnPrefab: {fileID: 4849869920275928284, guid: 0eebf1c0ef1829840abb6c91e607ec76, type: 3}
   panelPrefab: {fileID: 2003459987259589855, guid: 7ce21cca71a0cda468d02edcdcbb2f75, type: 3}
   canvas: {fileID: 180691273}
-  buttonWrapper: {fileID: 0}
 --- !u!1 &205202410
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,10 +9,12 @@ public class Panel : MonoBehaviour
     private Text _title;
     private string _parent;
     private List<string> _subfolders = new List<string>();
+    private RectTransform _panel;
     
     private void Awake() 
     {
         _title = GetComponentInChildren<Text>();    
+        _panel = GetComponent<RectTransform>();
     }
 
     public void Setup(string title, string[] subfolders, string parent)
@@ -25,6 +27,11 @@ public class Panel : MonoBehaviour
 
             _subfolders.Add(subfolder);
         }
+    }
+
+    public void AdaptSize()
+    {
+
     }
 
     public void SwitchTo(string subfolder)
