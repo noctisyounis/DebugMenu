@@ -9,7 +9,7 @@ public class MeshBoundingBox : MonoBehaviour
 
     private void Start()
     {
-        _meshFilter = new List<MeshFilter>();
+        _mesh = new List<MeshRenderer>();
 
         GetMeshInScene();
     }
@@ -19,17 +19,6 @@ public class MeshBoundingBox : MonoBehaviour
         if (!_isDisplay) return;
 
         DrawMeshBoundingBoxes();
-    }
-
-    private void OnGUI()
-    {
-        if(GUILayout.Button("Meshes"))
-        {
-            foreach (var item in _meshFilter)
-            {
-                Debug.Log(item);
-            }
-        }
     }
 
     #endregion
@@ -46,15 +35,15 @@ public class MeshBoundingBox : MonoBehaviour
 
     private static void RefreshMeshes()
     {
-        _meshFilter.Clear();
+        _mesh.Clear();
         GetMeshInScene();
     }
 
     private static void GetMeshInScene()
     {
-        foreach (var meshFilter in FindObjectsOfType(typeof(MeshFilter)) as MeshFilter[])
+        foreach (var mesh in FindObjectsOfType(typeof(MeshRenderer)) as MeshRenderer[])
         {
-            _meshFilter.Add(meshFilter);
+            _mesh.Add(mesh);
         }
     }
 
@@ -71,14 +60,14 @@ public class MeshBoundingBox : MonoBehaviour
         {
             Draw.Color = Color.yellow;
 
-            foreach (var meshFilter in _meshFilter)
+            foreach (var mesh in _mesh)
             {
-                DrawBoundingBox(meshFilter);
+                SetUpBoundingBox(mesh);
             }
         }
     }
 
-    private static void DrawBoundingBox(MeshFilter meshFilter)
+    private static void SetUpBoundingBox(MeshRenderer mesh)
     {
         Draw.LineThickness = 0.02f;
         PolylinePath[] paths = new PolylinePath[6];
@@ -88,8 +77,8 @@ public class MeshBoundingBox : MonoBehaviour
             paths[i] = new PolylinePath();
         }
 
-        Vector3 halfSize = meshFilter.mesh.bounds.size * 0.5f;
-        Vector3 center = meshFilter.transform.position;
+        Vector3 halfSize = mesh.bounds.extents;
+        Vector3 center = mesh.bounds.center;
 
         Vector3 upFrontRightVertices = center + new Vector3(halfSize.x, halfSize.y, halfSize.z);
         Vector3 upFrontLeftVertices = center + new Vector3(-halfSize.x, halfSize.y, halfSize.z);
@@ -119,7 +108,7 @@ public class MeshBoundingBox : MonoBehaviour
     #region private Members
 
     private static bool _isDisplay;
-    private static List<MeshFilter> _meshFilter;
+    private static List<MeshRenderer> _mesh;
 
     #endregion
 }
