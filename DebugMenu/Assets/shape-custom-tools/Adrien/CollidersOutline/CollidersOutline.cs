@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Shapes;
 using UnityEngine;
+using DebugAttribute;
 
 public class CollidersOutline : MonoBehaviour
 {
@@ -30,18 +29,7 @@ public class CollidersOutline : MonoBehaviour
             RefreshLists();
         }
     }
-
-    private void OnGUI()
-    {
-        if (GUILayout.Button("printList"))
-        {
-            foreach (var element in _boxColliders)
-            {
-                Debug.Log(element);
-            }
-        }
-    }
-
+    
     #endregion
 
 
@@ -55,6 +43,7 @@ public class CollidersOutline : MonoBehaviour
         GetTypeOfColliders();
     }
 
+    [DebugMenu("Settings/Gizmos/Show Colliders")]
     public static void SetState()
     {
         _state = !_state;
