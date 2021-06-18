@@ -373,7 +373,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9202570925294040415}
   - component: {fileID: 9202570925294040400}
-  - component: {fileID: 5691751457678064620}
   m_Layer: 5
   m_Name: DebugMenuPanel
   m_TagString: Untagged
@@ -420,32 +419,3 @@ MonoBehaviour:
   _parentMenuButton: {fileID: 2007821295221870049}
   _mask: {fileID: 1778560726643262818}
   _textSpacing: 20
---- !u!114 &5691751457678064620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9202570925294040414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 16
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 9202570925294040400}
-          m_TargetAssemblyTypeName: DebugMenu, DebugUI
-          m_MethodName: ReturnToParent
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2

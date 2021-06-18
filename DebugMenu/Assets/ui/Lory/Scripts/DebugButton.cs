@@ -8,6 +8,7 @@ namespace DebugUI
     {
         #region Exposed
 
+        public DebugMenu Owner { get; set; }
         public string m_path;
 
         [SerializeField]
@@ -55,6 +56,11 @@ namespace DebugUI
         public void OnClick()
         {
             DebugMenuRoot.m_instance.TryDisplayPanel(m_path);
+        }
+
+        public void OnCancel()
+        {
+            Owner.ReturnToParent();
         }
 
         #endregion
