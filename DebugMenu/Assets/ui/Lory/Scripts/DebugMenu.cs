@@ -53,10 +53,6 @@ namespace DebugUI
         private void Update()
         {
             ResponsiveMenu();
-            if (Input.GetKeyDown(KeyCode.Backspace))
-            {
-                ReturnToParent();
-            }
         }
 
         private void OnEnable()
@@ -130,7 +126,9 @@ namespace DebugUI
             {
                 _prefabButton.GetComponent<Button>().GetComponentInChildren<Text>().text = item.Key;
                 _prefabButton.GetComponent<DebugButton>().m_path = item.Value;
-                GameObject.Instantiate(_prefabButton, _parentMenuButton);
+                var buttonObject = GameObject.Instantiate(_prefabButton, _parentMenuButton);
+                var button = buttonObject.GetComponent<DebugButton>();
+                button.Owner = this;
             }
 
             DebugMenuRoot.m_instance.GeneratePanel(otherPanel, m_depth + 1);
