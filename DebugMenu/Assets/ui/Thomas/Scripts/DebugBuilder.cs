@@ -86,7 +86,7 @@ public class DebugBuilder : MonoBehaviour
             GenerateReturnButton(newPanel);
         }
 
-        newPanel.gameObject.SetActive(false);
+        newPanel.AdaptSize();
     }
 
     private void GenerateReturnButton(Panel parent)

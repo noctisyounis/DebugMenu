@@ -31,7 +31,13 @@ public class Panel : MonoBehaviour
 
     public void AdaptSize()
     {
+        var fitters = GetComponentsInChildren<ContentSizeFitter>();
+        foreach (var fitter in fitters)
+        {
+            fitter.SetLayoutVertical();
+        }
 
+        gameObject.SetActive(false);
     }
 
     public void SwitchTo(string subfolder)
