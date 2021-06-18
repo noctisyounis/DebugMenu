@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class DebugMenu : MonoBehaviour
 {
@@ -54,6 +55,11 @@ public class DebugMenu : MonoBehaviour
         {
             ReturnToParent();
         }
+    }
+
+    private void OnEnable()
+    {
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     #endregion

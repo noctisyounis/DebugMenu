@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class DebugButton : MonoBehaviour
 {
@@ -25,11 +26,18 @@ public class DebugButton : MonoBehaviour
     private void OnEnable()
     {
         DebugMenu.m_menuDebugButton.Add(GetComponent<Button>());
+
+        if(EventSystem.current.currentSelectedGameObject == null)
+        {
+            IndicateHover();
+            EventSystem.current.SetSelectedGameObject(this.gameObject);
+        }
     }
 
     private void OnDisable()
     {
         DebugMenu.m_menuDebugButton.Remove(GetComponent<Button>());
+        IndicateNoHover();
     }
 
     private void OnDestroy()
