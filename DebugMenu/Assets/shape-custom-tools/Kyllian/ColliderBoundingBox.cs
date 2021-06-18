@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Shapes;
 using UnityEngine;
+using DebugAttribute;
 
 public class ColliderBoundingBox : MonoBehaviour
 {
@@ -26,12 +27,22 @@ public class ColliderBoundingBox : MonoBehaviour
 
     #region Utils
 
+    [DebugMenu("Settings/Gizmos/BoundingBox")]
     public static void SetColliderBoundingBox()
     {
         _isDisplay = !_isDisplay;
+        RefreshColliders();
     }
 
-    private List<Collider> GetCollidersInScene()
+    private static void RefreshColliders()
+    {
+        _colliders.Clear();
+        _sphereColliders.Clear();
+
+        GetTypeOfColliders();
+    }
+
+    private static List<Collider> GetCollidersInScene()
     {
         List<Collider> collidersInScene = new List<Collider>();
 
@@ -43,7 +54,7 @@ public class ColliderBoundingBox : MonoBehaviour
         return collidersInScene;
     }
 
-    private void GetTypeOfColliders()
+    private static void GetTypeOfColliders()
     {
         foreach (var collider in GetCollidersInScene())
         {
