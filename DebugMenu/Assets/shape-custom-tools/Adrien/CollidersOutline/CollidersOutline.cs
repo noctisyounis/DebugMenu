@@ -13,6 +13,7 @@ public class CollidersOutline : MonoBehaviour
         _boxColliders = new List<BoxCollider>();
         _sphereColliders = new List<SphereCollider>();
         _capsuleColliders = new List<CapsuleCollider>();
+        GetTypeOfColliders();
     }
 
     private void Update()
@@ -22,9 +23,23 @@ public class CollidersOutline : MonoBehaviour
             SetState();
         }
 
-        if (!_state) return;
-        GetTypeOfColliders();
-        DisplayColliders();
+        // if (!_state) return;
+        if (_state)
+        {
+            DisplayColliders();
+            RefreshLists();
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (GUILayout.Button("printList"))
+        {
+            foreach (var element in _boxColliders)
+            {
+                Debug.Log(element);
+            }
+        }
     }
 
     #endregion
@@ -32,12 +47,20 @@ public class CollidersOutline : MonoBehaviour
 
     #region Utils
 
+    private static void RefreshLists()
+    {
+        _boxColliders.Clear();
+        _sphereColliders.Clear();
+        _capsuleColliders.Clear();
+        GetTypeOfColliders();
+    }
+
     public static void SetState()
     {
         _state = !_state;
     }
 
-    private List<Collider> GetCollidersInScene()
+    private static List<Collider> GetCollidersInScene()
     {
         List<Collider> collidersInScene = new List<Collider>();
 
@@ -49,7 +72,7 @@ public class CollidersOutline : MonoBehaviour
         return collidersInScene;
     }
 
-    private void GetTypeOfColliders()
+    private static void GetTypeOfColliders()
     {
         foreach (var element in GetCollidersInScene())
         {
