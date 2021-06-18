@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using Shapes;
 using UnityEngine;
 using DebugAttribute;
@@ -14,6 +12,7 @@ public class CollidersOutline : MonoBehaviour
         _boxColliders = new List<BoxCollider>();
         _sphereColliders = new List<SphereCollider>();
         _capsuleColliders = new List<CapsuleCollider>();
+        GetTypeOfColliders();
     }
 
     private void Update()
@@ -23,23 +22,34 @@ public class CollidersOutline : MonoBehaviour
             SetState();
         }
 
-        if (!_state) return;
-        GetTypeOfColliders();
-        DisplayColliders();
+        // if (!_state) return;
+        if (_state)
+        {
+            DisplayColliders();
+            RefreshLists();
+        }
     }
-
+    
     #endregion
 
 
     #region Utils
 
-    [DebugMenu("Settings/Gizmos/Colliders outline")]
+    private static void RefreshLists()
+    {
+        _boxColliders.Clear();
+        _sphereColliders.Clear();
+        _capsuleColliders.Clear();
+        GetTypeOfColliders();
+    }
+
+    [DebugMenu("Settings/Gizmos/Show Colliders")]
     public static void SetState()
     {
         _state = !_state;
     }
 
-    private List<Collider> GetCollidersInScene()
+    private static List<Collider> GetCollidersInScene()
     {
         List<Collider> collidersInScene = new List<Collider>();
 
@@ -51,7 +61,7 @@ public class CollidersOutline : MonoBehaviour
         return collidersInScene;
     }
 
-    private void GetTypeOfColliders()
+    private static void GetTypeOfColliders()
     {
         foreach (var element in GetCollidersInScene())
         {
