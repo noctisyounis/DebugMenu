@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Shapes;
 using UnityEngine;
 
-public class CollidersOutline : ImmediateModeShapeDrawer
+public class CollidersOutline : MonoBehaviour
 {
     #region Unity API
 
@@ -13,19 +13,29 @@ public class CollidersOutline : ImmediateModeShapeDrawer
         _boxColliders = new List<BoxCollider>();
         _sphereColliders = new List<SphereCollider>();
         _capsuleColliders = new List<CapsuleCollider>();
-        _meshColliders = new List<MeshCollider>();
-        GetTypeOfColliders();
     }
 
-    private void OnGUI()
+    private void Update()
     {
-        GUILayout.Label($"colliders : {GetCollidersInScene().Count}");
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SetState();
+        }
+
+        if (!_state) return;
+        GetTypeOfColliders();
+        DisplayColliders();
     }
 
     #endregion
 
 
     #region Utils
+
+    public static void SetState()
+    {
+        _state = !_state;
+    }
 
     private List<Collider> GetCollidersInScene()
     {
@@ -55,10 +65,6 @@ public class CollidersOutline : ImmediateModeShapeDrawer
             {
                 _capsuleColliders.Add((CapsuleCollider) element);
             }
-            else if (element.GetType() == typeof(MeshCollider))
-            {
-                _meshColliders.Add((MeshCollider) element);
-            }
         }
     }
 
@@ -67,37 +73,30 @@ public class CollidersOutline : ImmediateModeShapeDrawer
 
     #region DrawingShape
 
-    public override void DrawShapes(Camera cam)
+    public static void DisplayColliders()
     {
+        Camera cam = Camera.main;
+
+
         using (Draw.Command(cam))
         {
-            // set up static parameters. these are used for all following Draw.Line calls
-            Draw.LineGeometry = LineGeometry.Volumetric3D;
-            Draw.LineThicknessSpace = ThicknessSpace.Pixels;
-            Draw.LineThickness = 4; // 4px wide
-
-            // set static parameter to draw in the local space of this object
-            Draw.Matrix = transform.localToWorldMatrix;
-
             foreach (var element in _boxColliders)
             {
-                Draw.Cuboid(element.bounds.center, element.bounds.size, Color.red);
+                Draw.Cuboid(element.bounds.center, element.transform.rotation, element.bounds.size, Color.red);
             }
 
             foreach (var element in _sphereColliders)
             {
-                Draw.Sphere(element.bounds.center, element.radius);
+                Draw.Sphere(element.bounds.center, element.radius, Color.red);
             }
 
             foreach (var element in _capsuleColliders)
             {
-                Draw.Cuboid(element.bounds.center, element.bounds.size, Color.red);
+                Draw.Cuboid(element.bounds.center, element.transform.rotation,
+                    new Vector3(element.radius * 2, element.height,
+                        element.radius * 2), Color.red);
             }
         }
-    }
-
-    private void Test()
-    {
     }
 
     #endregion
@@ -105,10 +104,10 @@ public class CollidersOutline : ImmediateModeShapeDrawer
 
     #region private Members
 
-    private List<BoxCollider> _boxColliders;
-    private List<SphereCollider> _sphereColliders;
-    private List<CapsuleCollider> _capsuleColliders;
-    private List<MeshCollider> _meshColliders;
+    private static List<BoxCollider> _boxColliders;
+    private static List<SphereCollider> _sphereColliders;
+    private static List<CapsuleCollider> _capsuleColliders;
+    private static bool _state;
 
     #endregion
 }
