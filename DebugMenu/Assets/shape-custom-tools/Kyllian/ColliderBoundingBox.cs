@@ -10,6 +10,7 @@ public class ColliderBoundingBox : MonoBehaviour
     {
         _colliders = new List<Collider>();
         _sphereColliders = new List<SphereCollider>();
+
         GetTypeOfColliders();
     }
 
@@ -65,6 +66,7 @@ public class ColliderBoundingBox : MonoBehaviour
     private static void DrawColliderBoundingBoxes()
     {
         Camera cam = Camera.main;
+
         using (Draw.Command(cam))
         {
             Draw.Color = Color.red;
@@ -83,15 +85,14 @@ public class ColliderBoundingBox : MonoBehaviour
 
     private static void DrawBoundingSphere(SphereCollider collider)
     {
-        Draw.DiscRadius = collider.radius;
         Draw.RingThickness = 0.015f;
+        Vector3 center = collider.bounds.center;
+        float radius = collider.bounds.size.x * 0.5f;
 
-        Draw.Ring(collider.bounds.center);
-        Draw.Ring(collider.bounds.center, Quaternion.Euler(90, 0, 0));
-        Draw.Ring(collider.bounds.center, Quaternion.Euler(0, 90, 0));
-
-        Draw.DiscGeometry = DiscGeometry.Billboard;
-        Draw.Ring(collider.bounds.center);
+        Draw.DiscGeometry = DiscGeometry.Flat2D;
+        Draw.Ring(center, radius);
+        Draw.Ring(center, Quaternion.Euler(90, 0, 0), radius);
+        Draw.Ring(center, Quaternion.Euler(0, 90, 0), radius);
     }
 
     private static void DrawBoundingBox(Collider collider)
@@ -104,17 +105,17 @@ public class ColliderBoundingBox : MonoBehaviour
             paths[i] = new PolylinePath();
         }
 
-        var halfSize = collider.bounds.size * 0.5f;
-        var center = collider.bounds.center;
+        Vector3 halfSize = collider.bounds.size * 0.5f;
+        Vector3 center = collider.bounds.center;
 
-        var upFrontRightVertices = center + new Vector3(halfSize.x, halfSize.y, halfSize.z);
-        var upFrontLeftVertices = center + new Vector3(-halfSize.x, halfSize.y, halfSize.z);
-        var upBackRightVertices = center + new Vector3(halfSize.x, halfSize.y, -halfSize.z);
-        var upBackLeftVertices = center + new Vector3(-halfSize.x, halfSize.y, -halfSize.z);
-        var downFrontRightVertices = center + new Vector3(halfSize.x, -halfSize.y, halfSize.z);
-        var downFrontLeftVertices = center + new Vector3(-halfSize.x, -halfSize.y, halfSize.z);
-        var downBackRightVertices = center + new Vector3(halfSize.x, -halfSize.y, -halfSize.z);
-        var downBackLeftVertices = center + new Vector3(-halfSize.x, -halfSize.y, -halfSize.z);
+        Vector3 upFrontRightVertices = center + new Vector3(halfSize.x, halfSize.y, halfSize.z);
+        Vector3 upFrontLeftVertices = center + new Vector3(-halfSize.x, halfSize.y, halfSize.z);
+        Vector3 upBackRightVertices = center + new Vector3(halfSize.x, halfSize.y, -halfSize.z);
+        Vector3 upBackLeftVertices = center + new Vector3(-halfSize.x, halfSize.y, -halfSize.z);
+        Vector3 downFrontRightVertices = center + new Vector3(halfSize.x, -halfSize.y, halfSize.z);
+        Vector3 downFrontLeftVertices = center + new Vector3(-halfSize.x, -halfSize.y, halfSize.z);
+        Vector3 downBackRightVertices = center + new Vector3(halfSize.x, -halfSize.y, -halfSize.z);
+        Vector3 downBackLeftVertices = center + new Vector3(-halfSize.x, -halfSize.y, -halfSize.z);
 
         paths[0].AddPoints(new Vector3[] { upFrontRightVertices, upFrontLeftVertices, upBackLeftVertices, upBackRightVertices });
         paths[1].AddPoints(new Vector3[] { downFrontRightVertices, downFrontLeftVertices, downBackLeftVertices, downBackRightVertices });
