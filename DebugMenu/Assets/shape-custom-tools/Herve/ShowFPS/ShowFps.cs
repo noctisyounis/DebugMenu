@@ -1,6 +1,7 @@
 using Shapes;
 using UnityEngine;
 using UnityEngine.UI;
+using DebugAttribute;
 
 public class ShowFps : ImmediateModeShapeDrawer
 {
@@ -17,12 +18,13 @@ public class ShowFps : ImmediateModeShapeDrawer
 
     #region Utils
 
+    [DebugMenu("Settings/Performances/Show Framerate")]
     public static void SetShowFps()
     {
         _isShowingFps = !_isShowingFps;
     }
 
-    public static void DisplayFps()
+    private static void DisplayFps()
     {
         Camera cam = Camera.main;
         using (Draw.Command(cam))
