@@ -1,23 +1,26 @@
 using UnityEngine;
 
-public class DebugDebug : MonoBehaviour
+namespace DebugUI
 {
-    #region Exposed
-
-    #endregion
-
-
-    #region Unity API
-
-    public void Test()
+    public class DebugDebug : MonoBehaviour
     {
-        Debug.Log("PUTAIN CA MARCHE");
+        #region Exposed
+
+        #endregion
+
+
+        #region Unity API
+
+        public void Test()
+        {
+            Debug.Log("PUTAIN CA MARCHE");
+        }
+
+        #endregion
+
+
+        #region Private
+
+        #endregion
     }
-
-    #endregion
-
-
-    #region Private
-
-    #endregion
 }

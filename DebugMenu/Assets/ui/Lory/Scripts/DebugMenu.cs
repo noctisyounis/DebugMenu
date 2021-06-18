@@ -3,161 +3,164 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class DebugMenu : MonoBehaviour
+namespace DebugUI
 {
-    #region Exposed
+    public class DebugMenu : MonoBehaviour
+    {
+        #region Exposed
 
-    public static List<Button> m_menuDebugButton = new List<Button>();
-    public int m_depth;
-    public List<string> Paths { get; set; }
+        public static List<Button> m_menuDebugButton = new List<Button>();
+        public int m_depth;
+        public List<string> Paths { get; set; }
 
-    public string Title 
-    { 
-        get => _headerTitle.text; 
-
-        set
+        public string Title
         {
-            _headerTitle.text = value;
-        }
-    
-    }
+            get => _headerTitle.text;
 
-    public string ParentPath
-    {
-        get => _parent;
-        set => _parent = value;
-    }
-
-
-    [SerializeField]
-    private Text _headerTitle;
-    [SerializeField]
-    private RectTransform _backgroundMenu;
-    [SerializeField]
-    private RectTransform _prefabButton;
-    [SerializeField]
-    private RectTransform _parentMenuButton;
-    [SerializeField]
-    private RectTransform _mask;
-
-    [SerializeField]
-    private float _textSpacing;
-
-    #endregion
-
-
-    #region Unity API
-
-    private void Update()
-    {
-        ResponsiveMenu();
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            ReturnToParent();
-        }
-    }
-
-    private void OnEnable()
-    {
-        EventSystem.current.SetSelectedGameObject(null);
-    }
-
-    #endregion
-
-
-    #region Main
-
-    public void StartGenerate()
-    {
-        if (_isGenerated) return;
-        _isGenerated = true;
-        GenerateButton(Paths.ToArray());
-    }
-
-    public void ReturnToParent()
-    {
-        if (ParentPath.Length == 0) return;
-        DebugMenuRoot.m_instance.TryDisplayPanel(ParentPath);
-    }
-
-    #endregion
-
-
-    #region Utils
-
-    private void ResponsiveMenu()
-    {
-        var addToList = _parentMenuButton.GetComponentsInChildren<Button>();
-
-        foreach (var element in addToList)
-        {
-            if (!m_menuDebugButton.Contains(element))
+            set
             {
-                m_menuDebugButton.Add(element);
+                _headerTitle.text = value;
+            }
+
+        }
+
+        public string ParentPath
+        {
+            get => _parent;
+            set => _parent = value;
+        }
+
+
+        [SerializeField]
+        private Text _headerTitle;
+        [SerializeField]
+        private RectTransform _backgroundMenu;
+        [SerializeField]
+        private RectTransform _prefabButton;
+        [SerializeField]
+        private RectTransform _parentMenuButton;
+        [SerializeField]
+        private RectTransform _mask;
+
+        [SerializeField]
+        private float _textSpacing;
+
+        #endregion
+
+
+        #region Unity API
+
+        private void Update()
+        {
+            ResponsiveMenu();
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                ReturnToParent();
             }
         }
 
-        var sizeMenu = _prefabButton.rect.height * m_menuDebugButton.Count;
-        if (m_menuDebugButton.Count < 20)
+        private void OnEnable()
         {
-            _backgroundMenu.sizeDelta = new Vector2(_backgroundMenu.rect.width, _headerTitle.rectTransform.rect.height + sizeMenu + _textSpacing);
-            _mask.sizeDelta = new Vector2(_backgroundMenu.rect.width, sizeMenu);
+            EventSystem.current.SetSelectedGameObject(null);
         }
-        _parentMenuButton.sizeDelta = new Vector2(_parentMenuButton.rect.width, sizeMenu);
-    }
 
-    private void GenerateButton(string[] paths)
-    {
-        Dictionary<string, string> firstmenu = new Dictionary<string, string>();
-        List<string> otherPanel = new List<string>();
+        #endregion
 
-        for (int i = 0; i < paths.Length; i++)
+
+        #region Main
+
+        public void StartGenerate()
         {
-            string[] commands = paths[i].Split('/');
-            if (!firstmenu.ContainsKey(commands[m_depth + 1]))
+            if (_isGenerated) return;
+            _isGenerated = true;
+            GenerateButton(Paths.ToArray());
+        }
+
+        public void ReturnToParent()
+        {
+            if (ParentPath.Length == 0) return;
+            DebugMenuRoot.m_instance.TryDisplayPanel(ParentPath);
+        }
+
+        #endregion
+
+
+        #region Utils
+
+        private void ResponsiveMenu()
+        {
+            var addToList = _parentMenuButton.GetComponentsInChildren<Button>();
+
+            foreach (var element in addToList)
             {
-                firstmenu.Add(commands[m_depth + 1], BuildNextPath(commands));
+                if (!m_menuDebugButton.Contains(element))
+                {
+                    m_menuDebugButton.Add(element);
+                }
             }
 
-            if (commands.Length - m_depth > 2)
+            var sizeMenu = _prefabButton.rect.height * m_menuDebugButton.Count;
+            if (m_menuDebugButton.Count < 20)
             {
-                otherPanel.Add(paths[i]);
+                _backgroundMenu.sizeDelta = new Vector2(_backgroundMenu.rect.width, _headerTitle.rectTransform.rect.height + sizeMenu + _textSpacing);
+                _mask.sizeDelta = new Vector2(_backgroundMenu.rect.width, sizeMenu);
             }
-        }
-        foreach (var item in firstmenu)
-        {
-            _prefabButton.GetComponent<Button>().GetComponentInChildren<Text>().text = item.Key;
-            _prefabButton.GetComponent<DebugButton>().m_path = item.Value;
-            GameObject.Instantiate(_prefabButton, _parentMenuButton);
+            _parentMenuButton.sizeDelta = new Vector2(_parentMenuButton.rect.width, sizeMenu);
         }
 
-        DebugMenuRoot.m_instance.GeneratePanel(otherPanel, m_depth + 1);
-    }
-
-    private string BuildNextPath(string[] paths)
-    {
-        var result = "";
-
-        for (int i = 0; i <= m_depth + 1; i++)
+        private void GenerateButton(string[] paths)
         {
-            if (i != 0)
+            Dictionary<string, string> firstmenu = new Dictionary<string, string>();
+            List<string> otherPanel = new List<string>();
+
+            for (int i = 0; i < paths.Length; i++)
             {
-                result += "/";
+                string[] commands = paths[i].Split('/');
+                if (!firstmenu.ContainsKey(commands[m_depth + 1]))
+                {
+                    firstmenu.Add(commands[m_depth + 1], BuildNextPath(commands));
+                }
+
+                if (commands.Length - m_depth > 2)
+                {
+                    otherPanel.Add(paths[i]);
+                }
             }
-            result += paths[i];
+            foreach (var item in firstmenu)
+            {
+                _prefabButton.GetComponent<Button>().GetComponentInChildren<Text>().text = item.Key;
+                _prefabButton.GetComponent<DebugButton>().m_path = item.Value;
+                GameObject.Instantiate(_prefabButton, _parentMenuButton);
+            }
+
+            DebugMenuRoot.m_instance.GeneratePanel(otherPanel, m_depth + 1);
         }
 
-        return result;
+        private string BuildNextPath(string[] paths)
+        {
+            var result = "";
+
+            for (int i = 0; i <= m_depth + 1; i++)
+            {
+                if (i != 0)
+                {
+                    result += "/";
+                }
+                result += paths[i];
+            }
+
+            return result;
+        }
+
+        #endregion
+
+
+        #region Private
+
+        private string _parent;
+
+        private bool _isGenerated;
+
+        #endregion
     }
-
-    #endregion
-
-
-    #region Private
-
-    private string _parent;
-
-    private bool _isGenerated;
-
-    #endregion
 }
