@@ -1,153 +1,156 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugMenuRoot : MonoBehaviour
+namespace DebugUI
 {
-    #region Testing
-
-    private string[] testArray = new string[] { "Gizmo/Afficher/Collider", "FrameRate", "Options Characters/Heal", "Options Characters/Boosts", "Quitter" };
-
-    #endregion 
-
-    #region Exposed
-
-    public static DebugMenuRoot m_instance;
-
-    [SerializeField]
-    private string _debugMenuName;
-    [SerializeField]
-    private RectTransform _debugMenuPanel;
-
-    #endregion
-
-
-    #region Unity API
-
-    private void Awake()
+    public class DebugMenuRoot : MonoBehaviour
     {
-        m_instance = this;
-        _menus = new Dictionary<string, DebugMenu>();
-        StartGenerate();
-    }
+        #region Testing
 
-    #endregion
+        private string[] testArray = new string[] { "Gizmo/Afficher/Collider", "FrameRate", "Options Characters/Heal", "Options Characters/Boosts", "Quitter" };
 
-    #region Main
+        #endregion
 
-    public void GeneratePanel(List<string> paths, int depth)
-    {
-        var generatedMenus = new List<string>();
-        foreach (string path in paths)
+        #region Exposed
+
+        public static DebugMenuRoot m_instance;
+
+        [SerializeField]
+        private string _debugMenuName;
+        [SerializeField]
+        private RectTransform _debugMenuPanel;
+
+        #endregion
+
+
+        #region Unity API
+
+        private void Awake()
         {
-            string[] commands = path.Split('/');
-            var panelName = commands[depth];
-            var panelPath = "";
-            var parentPath = "";
+            m_instance = this;
+            _menus = new Dictionary<string, DebugMenu>();
+            StartGenerate();
+        }
 
-            for (int i = 0; i <= depth; i++)
+        #endregion
+
+        #region Main
+
+        public void GeneratePanel(List<string> paths, int depth)
+        {
+            var generatedMenus = new List<string>();
+            foreach (string path in paths)
             {
-                if(i != 0)
+                string[] commands = path.Split('/');
+                var panelName = commands[depth];
+                var panelPath = "";
+                var parentPath = "";
+
+                for (int i = 0; i <= depth; i++)
                 {
-                    panelPath += "/";
+                    if (i != 0)
+                    {
+                        panelPath += "/";
+                    }
+                    panelPath += commands[i];
                 }
-                panelPath += commands[i];
-            }
-            for (int i = 0; i < depth; i++)
-            {
-                if (i != 0)
+                for (int i = 0; i < depth; i++)
                 {
-                    parentPath += "/";
+                    if (i != 0)
+                    {
+                        parentPath += "/";
+                    }
+                    parentPath += commands[i];
                 }
-                parentPath += commands[i];
+                if (!_menus.ContainsKey(panelPath))
+                {
+                    var menuPanel = Instantiate(_debugMenuPanel, transform);
+                    var panel = menuPanel.GetComponent<DebugMenu>();
+
+                    panel.Title = panelName;
+                    panel.m_depth = depth;
+                    panel.Paths = new List<string>();
+                    panel.ParentPath = parentPath;
+
+                    _menus.Add(panelPath, panel);
+                    generatedMenus.Add(panelPath);
+                }
+                _menus[panelPath].Paths.Add(path);
             }
-            if (!_menus.ContainsKey(panelPath))
+
+            foreach (var item in generatedMenus)
             {
-                var menuPanel = Instantiate(_debugMenuPanel, transform);
-                var panel = menuPanel.GetComponent<DebugMenu>();
-
-                panel.Title = panelName;
-                panel.m_depth = depth;
-                panel.Paths = new List<string>();
-                panel.ParentPath = parentPath;
-
-                _menus.Add(panelPath, panel);
-                generatedMenus.Add(panelPath);
+                _menus[item].StartGenerate();
             }
-            _menus[panelPath].Paths.Add(path);
         }
 
-        foreach (var item in generatedMenus)
+        public void TryDisplayPanel(string path)
         {
-            _menus[item].StartGenerate();
+            if (_menus.ContainsKey(path))
+            {
+                DisplayPanel(path);
+            }
+            else
+            {
+                InvokeMethod(path);
+            }
         }
-    }
 
-    public void TryDisplayPanel(string path)
-    {
-        if (_menus.ContainsKey(path))
+        public void DisplayPanel(string path)
         {
-            DisplayPanel(path);
+            HidePanels();
+            _menus[path].gameObject.SetActive(true);
         }
-        else
+
+        private void HidePanels()
         {
-            InvokeMethod(path);
+            foreach (var item in _menus)
+            {
+                item.Value.gameObject.SetActive(false);
+            }
         }
-    }
 
-    public void DisplayPanel(string path)
-    {
-        HidePanels();
-        _menus[path].gameObject.SetActive(true);
-    }
-
-    private void HidePanels()
-    {
-        foreach (var item in _menus)
+        public void InvokeMethod(string path)
         {
-            item.Value.gameObject.SetActive(false);
+            Debug.Log($"Action At {path}");
         }
-    }
 
-    public void InvokeMethod(string path)
-    {
-        Debug.Log($"Action At {path}");
-    }
-
-    private void StartGenerate()
-    {
-        if (!_wasGenerate)
+        private void StartGenerate()
         {
-            var rootedPaths = LinkPathsToRoot(new List<string>(testArray));
-            GeneratePanel(rootedPaths, 0);
-            _wasGenerate = true;
-            DisplayPanel(_debugMenuName);
+            if (!_wasGenerate)
+            {
+                var rootedPaths = LinkPathsToRoot(new List<string>(testArray));
+                GeneratePanel(rootedPaths, 0);
+                _wasGenerate = true;
+                DisplayPanel(_debugMenuName);
+            }
         }
-    }
 
-    #endregion
+        #endregion
 
-    #region Utils
+        #region Utils
 
-    private List<string> LinkPathsToRoot(List<string> paths)
-    {
-        var result = new List<string>();
-
-        foreach (var path in paths)
+        private List<string> LinkPathsToRoot(List<string> paths)
         {
-            result.Add($"{_debugMenuName}/{path}");
+            var result = new List<string>();
+
+            foreach (var path in paths)
+            {
+                result.Add($"{_debugMenuName}/{path}");
+            }
+
+            return result;
         }
 
-        return result;
+        #endregion
+
+
+        #region Private
+
+        private Dictionary<string, DebugMenu> _menus;
+
+        private bool _wasGenerate;
+
+        #endregion
     }
-
-    #endregion
-
-
-    #region Private
-
-    private Dictionary<string, DebugMenu> _menus;
-
-    private bool _wasGenerate;
-
-    #endregion
 }
