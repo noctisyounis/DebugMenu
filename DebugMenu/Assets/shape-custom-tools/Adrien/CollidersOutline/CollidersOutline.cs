@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Shapes;
 using UnityEngine;
+using DebugAttribute;
 
 public class CollidersOutline : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class CollidersOutline : MonoBehaviour
 
     #region Utils
 
+    [DebugMenu("Settings/Gizmos/Colliders outline")]
     public static void SetState()
     {
         _state = !_state;
