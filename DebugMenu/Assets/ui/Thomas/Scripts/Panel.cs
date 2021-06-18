@@ -2,55 +2,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Panel : MonoBehaviour
+namespace DebugUI
 {
-    public RectTransform buttonWrapper;
-
-    private Text _title;
-    private string _parent;
-    private List<string> _subfolders = new List<string>();
-    private RectTransform _panel;
-    
-    private void Awake() 
+    public class Panel : MonoBehaviour
     {
-        _title = GetComponentInChildren<Text>();    
-        _panel = GetComponent<RectTransform>();
-    }
+        public RectTransform buttonWrapper;
 
-    public void Setup(string title, string[] subfolders, string parent)
-    {
-        _title.text = title;
-        _parent = parent;
-        foreach (var subfolder in subfolders)
-        {
-            if(_subfolders.Contains(subfolder)) continue;
-
-            _subfolders.Add(subfolder);
-        }
-    }
-
-    public void AdaptSize()
-    {
-        var fitters = GetComponentsInChildren<ContentSizeFitter>();
-        foreach (var fitter in fitters)
-        {
-            fitter.SetLayoutVertical();
-        }
-
-        gameObject.SetActive(false);
-    }
-
-    public void SwitchTo(string subfolder)
-    {
-        if (!_subfolders.Contains(subfolder)) return;
+        private Text _title;
+        private string _parent;
+        private List<string> _subfolders = new List<string>();
+        private RectTransform _panel;
+        private ScrollRect _scrollRect;
         
-        DebugBuilder.livingPanels[subfolder].gameObject.SetActive(true);
-        gameObject.SetActive(false);
-    }
+        private void Awake() 
+        {
+            _title = GetComponentInChildren<Text>();    
+            _panel = GetComponent<RectTransform>();
+        }
 
-    internal void Return()
-    {
-        DebugBuilder.livingPanels[_parent].gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        public void Setup(string title, string[] subfolders, string parent)
+        {
+            _title.text = title;
+            _parent = parent;
+            foreach (var subfolder in subfolders)
+            {
+                if(_subfolders.Contains(subfolder)) continue;
+
+                _subfolders.Add(subfolder);
+            }
+        }
+
+        public void AdaptSize()
+        {
+            var fitters = GetComponentsInChildren<ContentSizeFitter>();
+            foreach (var fitter in fitters)
+            {
+                fitter.SetLayoutVertical();
+            }
+
+            gameObject.SetActive(false);
+        }
+
+        public void SwitchTo(string subfolder)
+        {
+            if (!_subfolders.Contains(subfolder)) return;
+            
+            DebugBuilder.livingPanels[subfolder].gameObject.SetActive(true);
+            gameObject.SetActive(false);
+        }
+
+        internal void Return()
+        {
+            DebugBuilder.livingPanels[_parent].gameObject.SetActive(true);
+            gameObject.SetActive(false);
+        }
     }
 }
