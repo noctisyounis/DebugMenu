@@ -71,9 +71,11 @@ namespace DebugUI
 
 
         #region Privates
+
         private int _clickCount = 0;
-        private float _buttonPressSpeed = 0.2f;
+        private float _buttonPressSpeed = 0.4f;
         private float _lastPressTime = -10f;
+
         #endregion
     }
 }
