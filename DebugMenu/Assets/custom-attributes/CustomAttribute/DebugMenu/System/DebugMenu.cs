@@ -1,27 +1,25 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace DebugMenu
 {
     [AttributeUsage(AttributeTargets.Method,
-                    Inherited = true, 
+                    Inherited = true,
                     AllowMultiple = false)]
     public class DebugMenuAttribute : Attribute
     {
         #region Public
-        public string Path{
+
+        public string Path
+        {
             get
             {
                 return _path;
-            } 
+            }
         }
 
-        public bool IsQuickMenu{get; set;}
+        public bool IsQuickMenu { get; set; }
 
-        #endregion
-
+        #endregion Public
 
         #region Main
 
@@ -30,13 +28,12 @@ namespace DebugMenu
             _path = path;
         }
 
-        #endregion
-
+        #endregion Main
 
         #region Private
 
         private string _path;
 
-        #endregion
+        #endregion Private
     }
 }

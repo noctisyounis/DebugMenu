@@ -131,9 +131,12 @@ namespace DebugMenu
                             .GetTypes()
                             .SelectMany(classType => classType.GetMethods())
                             .Where(classMethod => classMethod.GetCustomAttributes().OfType<DebugMenuAttribute>().Any())
-                            .ToDictionary(methodInfo => methodInfo.GetCustomAttributes().OfType<DebugMenuAttribute>().First<DebugMenuAttribute>().Path);
+                            .ToDictionary(methodInfo => methodInfo.GetCustomAttributes().OfType<DebugMenuAttribute>().FirstOrDefault<DebugMenuAttribute>().Path);
 
-                _methods.Merge(assemblyDictionary);
+                if (assemblyDictionary != null)
+                {
+                    _methods.Merge(assemblyDictionary);
+                }
             }
         }
 

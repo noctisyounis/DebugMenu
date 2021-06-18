@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using DebugMenu;
-
+using UnityEngine;
 using static UnityEngine.Debug;
 
-public class DebugDemo : MonoBehaviour
+public class DebugDemo
 {
     public void OnClick()
     {
@@ -29,6 +25,8 @@ public class DebugDemo : MonoBehaviour
     public void HelloWorld()
     {
         Debug.Log("Hello World from instance");
+
+        // je monte les pv
     }
 
     [DebugMenu("Debug/Test/Static")]
@@ -45,10 +43,18 @@ public class DebugDemo : MonoBehaviour
         return 2;
     }
 
+    /// <summary>
+    /// value could be a monster name
+    /// myvalue could be a value of changing life
+    /// </summary>
+    /// <param name="value" Type="string"></param>
+    /// <param name="myvalue" Type="int"></param>
     [DebugMenu("Debug/Test/Parameter")]
     public static void PrintParam(string value, int myvalue)
     {
         Debug.Log($"value string = {value}, int value = {myvalue}");
+
+        // changer la vie de {string value} de autant de {int my value}
     }
 
     [DebugMenu("Debug/Test/Parameter And Return")]

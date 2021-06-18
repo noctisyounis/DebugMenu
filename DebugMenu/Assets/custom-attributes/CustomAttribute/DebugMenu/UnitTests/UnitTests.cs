@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using DebugMenu;
-using System;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
-using systemToTest = DebugMenu;
-
-public class UnitTests : MonoBehaviour
+public class UnitTests
 {
     #region Validate the ValidateMethods
 
@@ -38,18 +34,11 @@ public class UnitTests : MonoBehaviour
 
         bool result = false;
 
-        for (int i = 0; i < myPathsFromGetPaths.Length; i++)
-        {
-            myPathsToTest.Add(myPathsFromGetPaths[i]);
-        }
+        myPathsToTest.AddRange(myPathsFromGetPaths.ToList());
 
-        for (int i = 0; i < myPathsToTest.Count; i++)
-        {
-            if (myPathsToTest[i] == path)
-            {
-                result = true;
-            }
-        }
+        result = myPathsToTest
+                        .Where(u => u.Equals(path))
+                        .Any();
 
         Assert.IsTrue(result);
     }
@@ -61,12 +50,11 @@ public class UnitTests : MonoBehaviour
     [Test]
     public static void ValidAPrimitiveType()
     {
-        // Set a type you want to test
-        int myTypeToTest = 1;
+        var myValue = "change me to test";
 
-        var result = myTypeToTest.GetType();
+        var valueType = myValue.GetType();
 
-        Assert.IsTrue(result.IsPrimitive);
+        Assert.IsTrue(valueType.IsPrimitive);
     }
 
     #endregion Valid me that Primitive type
