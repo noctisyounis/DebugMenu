@@ -96,11 +96,16 @@ public class DebugMenuRoot : MonoBehaviour
 
     public void DisplayPanel(string path)
     {
-        foreach(var item in _menus)
+        HidePanels();
+        _menus[path].gameObject.SetActive(true);
+    }
+
+    private void HidePanels()
+    {
+        foreach (var item in _menus)
         {
             item.Value.gameObject.SetActive(false);
         }
-        _menus[path].gameObject.SetActive(true);
     }
 
     public void InvokeMethod(string path)
