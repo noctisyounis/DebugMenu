@@ -1,3 +1,16 @@
 {
-	"name": "DebugUI"
+    "name": "DebugUI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:24bd51b4ce6b67146acc27473c671194"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

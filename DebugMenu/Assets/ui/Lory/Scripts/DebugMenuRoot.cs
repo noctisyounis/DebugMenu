@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using DebugAttribute;
 
 namespace DebugUI
 {
@@ -10,6 +11,7 @@ namespace DebugUI
         private string[] testArray = new string[] { "Gizmo/Afficher/Collider", "FrameRate", "Options Characters/Heal", "Options Characters/Boosts", "Quitter" };
 
         #endregion
+
 
         #region Exposed
 
@@ -33,6 +35,7 @@ namespace DebugUI
         }
 
         #endregion
+
 
         #region Main
 
@@ -113,13 +116,15 @@ namespace DebugUI
         public void InvokeMethod(string path)
         {
             Debug.Log($"Action At {path}");
+            DebugAttributeRegistry.InvokeMethod(UnlinkPathFromRoot(path));
         }
 
         private void StartGenerate()
         {
             if (!_wasGenerate)
             {
-                var rootedPaths = LinkPathsToRoot(new List<string>(testArray));
+                var debugPath = DebugAttributeRegistry.GetPaths();
+                var rootedPaths = LinkPathsToRoot(new List<string>(debugPath));
                 GeneratePanel(rootedPaths, 0);
                 _wasGenerate = true;
                 DisplayPanel(_debugMenuName);
@@ -127,6 +132,7 @@ namespace DebugUI
         }
 
         #endregion
+
 
         #region Utils
 
@@ -139,6 +145,12 @@ namespace DebugUI
                 result.Add($"{_debugMenuName}/{path}");
             }
 
+            return result;
+        }
+
+        private string UnlinkPathFromRoot(string path)
+        {
+            var result = path.Remove(0, _debugMenuName.Length + 1);
             return result;
         }
 
