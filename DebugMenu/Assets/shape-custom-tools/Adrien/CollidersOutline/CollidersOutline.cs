@@ -94,19 +94,19 @@ public class CollidersOutline : MonoBehaviour
         {
             foreach (var element in _boxColliders)
             {
-                Draw.Cuboid(element.bounds.center, element.transform.rotation, element.bounds.size, Color.red);
+                Draw.Cuboid(element.bounds.center, element.transform.rotation, element.bounds.size, Color.green);
             }
 
             foreach (var element in _sphereColliders)
             {
-                Draw.Sphere(element.bounds.center, element.radius, Color.red);
+                Draw.Sphere(element.bounds.center, element.radius, Color.green);
             }
 
             foreach (var element in _capsuleColliders)
             {
                 Draw.Cuboid(element.bounds.center, element.transform.rotation,
                     new Vector3(element.radius * 2, element.height,
-                        element.radius * 2), Color.red);
+                        element.radius * 2), Color.green);
             }
         }
     }
