@@ -1,24 +1,24 @@
-using DebugMenu;
+using DebugAttribute;
 using UnityEngine;
 using static UnityEngine.Debug;
 
-public class DebugDemo
+public class DebugDemo : MonoBehaviour
 {
     public void OnClick()
     {
         Log($"<color=orange>How to interface with API Examples</color>");
 
         Log($"<color=orange>Always Call Static method</color>");
-        DebugCall.InvokeMethod("Debug/Test/Static");
+        DebugAttributeRegistry.InvokeMethod("Debug/Test/Static");
 
         Log($"<color=orange>Call a method with a return</color>");
-        Log(DebugCall.InvokeMethod<int>("Debug/Test/Return"));
+        Log(DebugAttributeRegistry.InvokeMethod<int>("Debug/Test/Return"));
 
         Log($"You can Set your parameters");
-        DebugCall.InvokeMethod("Debug/Test/Parameter", new object[] { "your string", 4 });
+        DebugAttributeRegistry.InvokeMethod("Debug/Test/Parameter", new object[] { "your string", 4 });
 
         Log($"You can set your parameters and even have a return");
-        Log(DebugCall.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[] { "Bonjour" }));
+        Log(DebugAttributeRegistry.InvokeMethod<string>("Debug/Test/Parameter And Return", new object[] { "Bonjour" }));
     }
 
     [DebugMenu("Debug/Test/Instance")]

@@ -1,4 +1,4 @@
-using DebugMenu;
+using DebugAttribute;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ public class UnitTests
     {
         // it's false because in DebugDemo we have a not Static Method that we writed to show how to not use :)
 
-        DebugCall.ValidateMethods();
+        DebugAttributeRegistry.ValidateMethods();
     }
 
     #endregion Validate the ValidateMethods
@@ -29,7 +29,7 @@ public class UnitTests
 
         string path = "Enter your static path to test here";
 
-        string[] myPathsFromGetPaths = DebugCall.GetPaths();
+        string[] myPathsFromGetPaths = DebugAttributeRegistry.GetPaths();
         List<string> myPathsToTest = new List<string>();
 
         bool result = false;

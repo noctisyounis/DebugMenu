@@ -4,9 +4,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace DebugMenu
+namespace DebugAttribute
 {
-    public class DebugCall
+    public class DebugAttributeRegistry
     {
         #region Main
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace DebugMenu
+namespace DebugAttribute
 {
     [AttributeUsage(AttributeTargets.Method,
                     Inherited = true,

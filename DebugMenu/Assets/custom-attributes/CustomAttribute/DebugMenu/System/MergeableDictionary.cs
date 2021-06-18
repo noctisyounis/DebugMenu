@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DebugMenu
+namespace DebugAttribute
 {
     public class MergeableDictionary<TKey, TValue> : Dictionary<TKey, TValue>
     {
