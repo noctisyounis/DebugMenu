@@ -45,9 +45,9 @@ public class MemoryProfiler : ImmediateModeShapeDrawer
         Camera cam = Camera.main;
         using (Draw.Command(cam))
         {
-            var pos = cam.ScreenToViewportPoint(new Vector3(1000, 850, 1));
+            var pos = cam.ScreenToViewportPoint(new Vector3(cam.pixelWidth - 20, cam.pixelHeight - 20, 1));
             var goodPos = cam.ViewportToWorldPoint(pos);
-            Draw.Text(goodPos, cam.transform.forward, _statsText, TextAlign.BottomLeft, 0.5f, Color.red);
+            Draw.Text(goodPos, cam.transform.forward, _statsText, TextAlign.TopRight, 0.5f, Color.red);
         }     
     }
 
