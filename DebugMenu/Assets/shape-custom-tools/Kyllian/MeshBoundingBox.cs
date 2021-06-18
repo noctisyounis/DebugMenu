@@ -3,23 +3,22 @@ using Shapes;
 using UnityEngine;
 using DebugAttribute;
 
-public class ColliderBoundingBox : MonoBehaviour
+public class MeshBoundingBox : MonoBehaviour
 {
     #region Unity API
 
     private void Start()
     {
-        _colliders = new List<Collider>();
-        _sphereColliders = new List<SphereCollider>();
+        _mesh = new List<MeshRenderer>();
 
-        GetTypeOfColliders();
+        GetMeshInScene();
     }
 
     private void Update()
     {
         if (!_isDisplay) return;
 
-        DrawColliderBoundingBoxes();
+        DrawMeshBoundingBoxes();
     }
 
     #endregion
@@ -27,45 +26,24 @@ public class ColliderBoundingBox : MonoBehaviour
 
     #region Utils
 
-    [DebugMenu("Settings/Gizmos/BoundingBox")]
-    public static void SetColliderBoundingBox()
+    [DebugMenu("Settings/Gizmos/MeshBoundingBox")]
+    public static void SetMeshBoundingBox()
     {
         _isDisplay = !_isDisplay;
-        RefreshColliders();
+        RefreshMeshes();
     }
 
-    private static void RefreshColliders()
+    private static void RefreshMeshes()
     {
-        _colliders.Clear();
-        _sphereColliders.Clear();
-
-        GetTypeOfColliders();
+        _mesh.Clear();
+        GetMeshInScene();
     }
 
-    private static List<Collider> GetCollidersInScene()
+    private static void GetMeshInScene()
     {
-        List<Collider> collidersInScene = new List<Collider>();
-
-        foreach (var collider in FindObjectsOfTypeAll(typeof(Collider)) as Collider[])
+        foreach (var mesh in FindObjectsOfType(typeof(MeshRenderer)) as MeshRenderer[])
         {
-            collidersInScene.Add(collider);
-        }
-
-        return collidersInScene;
-    }
-
-    private static void GetTypeOfColliders()
-    {
-        foreach (var collider in GetCollidersInScene())
-        {
-            if (collider.GetType() == typeof(SphereCollider))
-            {
-                _sphereColliders.Add((SphereCollider)collider);
-            }
-            else
-            {
-                _colliders.Add(collider);
-            }
+            _mesh.Add(mesh);
         }
     }
 
@@ -74,39 +52,22 @@ public class ColliderBoundingBox : MonoBehaviour
 
     #region DrawingShape
 
-    private static void DrawColliderBoundingBoxes()
+    private static void DrawMeshBoundingBoxes()
     {
         Camera cam = Camera.main;
 
         using (Draw.Command(cam))
         {
-            Draw.Color = Color.red;
+            Draw.Color = Color.yellow;
 
-            foreach (var collider in _colliders)
+            foreach (var mesh in _mesh)
             {
-                DrawBoundingBox(collider);
-            }
-
-            foreach (var sphereCollider in _sphereColliders)
-            {
-                DrawBoundingSphere(sphereCollider);
+                SetUpBoundingBox(mesh);
             }
         }
     }
 
-    private static void DrawBoundingSphere(SphereCollider collider)
-    {
-        Draw.RingThickness = 0.015f;
-        Vector3 center = collider.bounds.center;
-        float radius = collider.bounds.size.x * 0.5f;
-
-        Draw.DiscGeometry = DiscGeometry.Flat2D;
-        Draw.Ring(center, radius);
-        Draw.Ring(center, Quaternion.Euler(90, 0, 0), radius);
-        Draw.Ring(center, Quaternion.Euler(0, 90, 0), radius);
-    }
-
-    private static void DrawBoundingBox(Collider collider)
+    private static void SetUpBoundingBox(MeshRenderer mesh)
     {
         Draw.LineThickness = 0.02f;
         PolylinePath[] paths = new PolylinePath[6];
@@ -116,8 +77,8 @@ public class ColliderBoundingBox : MonoBehaviour
             paths[i] = new PolylinePath();
         }
 
-        Vector3 halfSize = collider.bounds.size * 0.5f;
-        Vector3 center = collider.bounds.center;
+        Vector3 halfSize = mesh.bounds.extents;
+        Vector3 center = mesh.bounds.center;
 
         Vector3 upFrontRightVertices = center + new Vector3(halfSize.x, halfSize.y, halfSize.z);
         Vector3 upFrontLeftVertices = center + new Vector3(-halfSize.x, halfSize.y, halfSize.z);
@@ -147,8 +108,7 @@ public class ColliderBoundingBox : MonoBehaviour
     #region private Members
 
     private static bool _isDisplay;
-    private static List<Collider> _colliders;
-    private static List<SphereCollider> _sphereColliders;
+    private static List<MeshRenderer> _mesh;
 
     #endregion
 }
