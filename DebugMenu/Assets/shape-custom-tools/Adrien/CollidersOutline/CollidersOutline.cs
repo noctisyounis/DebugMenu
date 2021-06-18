@@ -92,21 +92,23 @@ public class CollidersOutline : MonoBehaviour
 
         using (Draw.Command(cam))
         {
+            Draw.BlendMode = ShapesBlendMode.Transparent;
+            Draw.Color = new Color(0, 1, 0, 0.2f);
             foreach (var element in _boxColliders)
             {
-                Draw.Cuboid(element.bounds.center, element.transform.rotation, element.bounds.size, Color.green);
+                Draw.Cuboid(element.bounds.center, element.transform.rotation, element.bounds.size);
             }
 
             foreach (var element in _sphereColliders)
             {
-                Draw.Sphere(element.bounds.center, element.radius, Color.green);
+                Draw.Sphere(element.bounds.center, element.radius);
             }
 
             foreach (var element in _capsuleColliders)
             {
                 Draw.Cuboid(element.bounds.center, element.transform.rotation,
                     new Vector3(element.radius * 2, element.height,
-                        element.radius * 2), Color.green);
+                        element.radius * 2));
             }
         }
     }
