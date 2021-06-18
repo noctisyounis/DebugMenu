@@ -1,7 +1,7 @@
-using Shapes;
-using Unity.Profiling;
 using UnityEngine;
+using Unity.Profiling;
 using System.Text;
+using Shapes;
 using DebugAttribute;
 
 public class MemoryProfiler : ImmediateModeShapeDrawer

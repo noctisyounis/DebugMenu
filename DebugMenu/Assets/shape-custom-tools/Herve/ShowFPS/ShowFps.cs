@@ -1,6 +1,5 @@
-using Shapes;
 using UnityEngine;
-using UnityEngine.UI;
+using Shapes;
 using DebugAttribute;
 
 public class ShowFps : ImmediateModeShapeDrawer
