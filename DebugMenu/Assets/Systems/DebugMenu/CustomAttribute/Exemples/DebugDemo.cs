@@ -7,6 +7,8 @@ namespace DebugMenu.CustomAttribute.Exemples
 {
     public class DebugDemo : MonoBehaviour
     {
+        #region Utils
+
         public void OnClick()
         {
             Log($"<color=orange>How to interface with API Examples</color>");
@@ -28,8 +30,6 @@ namespace DebugMenu.CustomAttribute.Exemples
         public void HelloWorld()
         {
             Debug.Log("Hello World from instance");
-    
-            // je monte les pv
         }
     
         [DebugMenu("Debug/Test/Static")]
@@ -56,8 +56,6 @@ namespace DebugMenu.CustomAttribute.Exemples
         public static void PrintParam(string value, int myvalue)
         {
             Debug.Log($"value string = {value}, int value = {myvalue}");
-    
-            // changer la vie de {string value} de autant de {int my value}
         }
     
         [DebugMenu("Debug/Test/Parameter And Return")]
@@ -65,6 +63,7 @@ namespace DebugMenu.CustomAttribute.Exemples
         {
             return value;
         }
+
+        #endregion
     }
-    
 }
