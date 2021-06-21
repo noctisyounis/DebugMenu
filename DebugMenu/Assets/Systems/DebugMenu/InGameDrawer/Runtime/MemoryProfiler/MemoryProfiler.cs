@@ -1,67 +1,110 @@
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Unity.Profiling;
-using System.Text;
 using Shapes;
 using DebugAttribute;
 
-public class MemoryProfiler : ImmediateModeShapeDrawer
+namespace DebugMenu.InGameDrawer.MemoryProfiler
 {
-    #region Unity API
-
-    private void Update()
-    {       
-        var sb = new StringBuilder(500);
-        if (_totalReservedMemoryRecorder.Valid)
-            sb.AppendLine($"Total Reserved Memory: {_totalReservedMemoryRecorder.LastValue}");
-        if (_gcReservedMemoryRecorder.Valid)
-            sb.AppendLine($"GC Reserved Memory: {_gcReservedMemoryRecorder.LastValue}");
-        if (_textureMemoryRecorder.Valid)
-            sb.AppendLine($"Texture Used Memory: {_textureMemoryRecorder.LastValue}");
-        if (_meshMemoryRecorder.Valid)
-            sb.AppendLine($"Mesh Used Memory: {_meshMemoryRecorder.LastValue}");
-        _statsText = sb.ToString();
-        if (!_isShowingProfiler) return;
-        ShowMemoryProfiler();
-    }
-
-    #endregion
-
-
-    #region Utils
-
-    [DebugMenu("Settings/Performances/Memory Profiler")]
-    public static void SetShowProfiler()
+    public class MemoryProfiler : ImmediateModeShapeDrawer
     {
-        _isShowingProfiler = !_isShowingProfiler;
-    }
+        #region Unity API
 
-    private static void ShowMemoryProfiler()
-    {       
-        _totalReservedMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Total Reserved Memory");
-        _gcReservedMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "GC Reserved Memory");
-        _textureMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Texture Memory");
-        _meshMemoryRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Mesh Memory");
-
-        Camera cam = Camera.main;
-        using (Draw.Command(cam))
+        private void Awake() 
         {
-            var pos = cam.ScreenToViewportPoint(new Vector3(cam.pixelWidth - 20, cam.pixelHeight - 20, 1));
-            var goodPos = cam.ViewportToWorldPoint(pos);
-            Draw.Text(goodPos, cam.transform.forward, _statsText, TextAlign.TopRight, 0.5f, Color.red);
-        }     
+            _profilerRecorders = new Dictionary<string, ProfilerRecorder>();
+            GenerateProfilers();
+        }
+
+        private void Update()
+        {
+            _stringBuilder = new StringBuilder(500);
+            
+            foreach(var item in _profilerRecorders)
+            {
+                AddProfilerToStringBuilder(item.Key, item.Value);
+            }
+
+            _statsText = _stringBuilder.ToString();
+            if (!_isShowingProfiler) return;
+            ShowMemoryProfiler();
+        }
+
+        #endregion
+
+
+        #region Utils
+
+        private static void GenerateProfilers()
+        {
+            AddNewProfilerRecorder(TOTAL_RESERVED_MEMORY_NAME);
+            AddNewProfilerRecorder(GC_RESERVED_MEMORY_NAME);
+            AddNewProfilerRecorder(TEXTURE_MEMORY_NAME);
+            AddNewProfilerRecorder(MESH_MEMORY_NAME);
+        }
+
+        [DebugMenu("Settings/Performances/Memory Profiler")]
+        public static void ToggleShowProfiler()
+        {
+            _isShowingProfiler = !_isShowingProfiler;
+        }
+
+        private static void ShowMemoryProfiler()
+        {
+            Camera cam = Camera.main;
+            using (Draw.Command(cam))
+            {
+                var pos = cam.ScreenToViewportPoint(new Vector3(cam.pixelWidth - 20, cam.pixelHeight - 20, 1));
+                var goodPos = cam.ViewportToWorldPoint(pos);
+                Draw.Text(goodPos, cam.transform.forward, _statsText, TextAlign.TopRight, 0.5f, Color.red);
+            }     
+        }
+
+        private static float ConvertByteToMegaByte(float byteValue)
+        {
+            return (byteValue / 1_000_000f);
+        }
+
+        private static void AddNewProfilerRecorder(string statName)
+        {
+            if(_profilerRecorders.ContainsKey(statName)) return;
+
+            var profiler = ProfilerRecorder.StartNew(ProfilerCategory.Memory, statName);
+            _profilerRecorders.Add(statName, profiler);
+        }
+
+        private static void AddProfilerToStringBuilder(string statName, ProfilerRecorder profiler)
+        {
+            if(profiler.Valid)
+            {
+                _stringBuilder.AppendLine($"{statName}: {ConvertByteToMegaByte(profiler.LastValue):0.00} MB");
+            }
+        }
+
+        #endregion    
+
+
+        #region Private and Protected
+
+        #region Constants
+        
+        private const string TOTAL_RESERVED_MEMORY_NAME = "Total Reserved Memory";
+        private const string GC_RESERVED_MEMORY_NAME = "GC Reserved Memory";
+        private const string TEXTURE_MEMORY_NAME = "Texture Memory";
+        private const string MESH_MEMORY_NAME = "Mesh Memory";
+
+        #endregion
+
+        private static StringBuilder _stringBuilder;
+        private static bool _isShowingProfiler;
+        private static string _statsText;
+        private static ProfilerRecorder _totalReservedMemoryRecorder;
+        private static ProfilerRecorder _gcReservedMemoryRecorder;
+        private static ProfilerRecorder _textureMemoryRecorder;
+        private static ProfilerRecorder _meshMemoryRecorder;
+        private static Dictionary<string, ProfilerRecorder> _profilerRecorders;
+
+        #endregion
     }
-
-    #endregion    
-
-
-    #region Private and Protected
-
-    private static bool _isShowingProfiler;
-    private static string _statsText;
-    private static ProfilerRecorder _totalReservedMemoryRecorder;
-    private static ProfilerRecorder _gcReservedMemoryRecorder;
-    private static ProfilerRecorder _textureMemoryRecorder;
-    private static ProfilerRecorder _meshMemoryRecorder;
-
-    #endregion
 }
