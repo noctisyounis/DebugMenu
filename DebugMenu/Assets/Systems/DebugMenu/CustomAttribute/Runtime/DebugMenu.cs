@@ -21,6 +21,7 @@ namespace DebugAttribute
 
         #endregion Public
 
+
         #region Main
 
         public DebugMenuAttribute(string path)
@@ -29,6 +30,7 @@ namespace DebugAttribute
         }
 
         #endregion Main
+
 
         #region Private
 

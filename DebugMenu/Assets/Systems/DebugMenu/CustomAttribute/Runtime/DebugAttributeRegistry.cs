@@ -87,6 +87,7 @@ namespace DebugAttribute
 
         #endregion Invoke Method
 
+
         #region Get Data
 
         public static string[] GetPaths()
@@ -116,7 +117,9 @@ namespace DebugAttribute
 
         #endregion Get Data
 
+
         #endregion Main
+
 
         #region Utils
 
@@ -171,6 +174,7 @@ namespace DebugAttribute
         }
 
         #endregion Utils
+
 
         #region Private
 
