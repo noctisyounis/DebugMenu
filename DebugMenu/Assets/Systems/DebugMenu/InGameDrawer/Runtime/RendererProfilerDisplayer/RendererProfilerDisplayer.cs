@@ -10,11 +10,28 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
     {
         #region Unity API
 
+        public override void OnEnable() 
+        {
+            base.OnEnable();
+
+            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_SET_PASS_CASS_NAME} Count");
+            _drawCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_DRAW_CALLS_NAME} Count");
+            _verticesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_VERTICES_NAME} Count");
+        }
+
+        public override void OnDisable() 
+        {
+            base.OnDisable();
+
+            _passCallsRecorder.Dispose();
+            _drawCallsRecorder.Dispose();
+            _verticesRecorder.Dispose();
+        }
+
         private void Update()
         {
             if (!_isShowingProfiler) return;
             
-            RefreshStatistics();
             BuildStatisticsString();
             DisplayRendererProfiler();
         }
@@ -43,29 +60,22 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
             }
         }
 
-        private void RefreshStatistics()
-        {
-            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, "SetPass Calls Count");
-            _drawCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, "Draw Calls Count");
-            _verticesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, "Vertices Count");
-        }
-
         private void BuildStatisticsString()
         {
             var stringBuilder = new StringBuilder(500);
             if (_passCallsRecorder.Valid)
             {
-                stringBuilder.AppendLine($"SetPass Calls: {_passCallsRecorder.LastValue}");
+                stringBuilder.AppendLine($"{_SET_PASS_CASS_NAME}: {_passCallsRecorder.LastValue}");
             }
 
             if (_drawCallsRecorder.Valid)
             {
-                stringBuilder.AppendLine($"Draw Calls: {_drawCallsRecorder.LastValue}");
+                stringBuilder.AppendLine($"{_DRAW_CALLS_NAME}: {_drawCallsRecorder.LastValue}");
             }
 
             if (_verticesRecorder.Valid)
             {
-                stringBuilder.AppendLine($"Vertices: {_verticesRecorder.LastValue}");
+                stringBuilder.AppendLine($"{_VERTICES_NAME}: {_verticesRecorder.LastValue}");
             }    
             
             _statsText = stringBuilder.ToString();
@@ -81,6 +91,15 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
         private ProfilerRecorder _passCallsRecorder;
         private ProfilerRecorder _drawCallsRecorder;
         private ProfilerRecorder _verticesRecorder;
+
+        #endregion
+
+
+        #region Constants
+            
+        private const string _SET_PASS_CASS_NAME = "SetPass Calls";
+        private const string _DRAW_CALLS_NAME = "Draw Calls";
+        private const string _VERTICES_NAME = "Vertices";
 
         #endregion
     }
