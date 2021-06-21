@@ -8,16 +8,18 @@ namespace DebugMenu.CustomAttribute.Editor
 {
     public class DictionaryValidatorMenuItem
     {
-
 #if UNITY_EDITOR
         [MenuItem("Debug Menu/Validate Methods")]
         [Conditional("DEBUG")]
 #endif
+
+        #region Utils
+
         public static void TryValidate()
         {
             DebugAttributeRegistry.ValidateMethods();
-            
-            
-        } 
+        }
+
+        #endregion
     }
 }
