@@ -4,9 +4,9 @@ using System.Text;
 using Shapes;
 using DebugAttribute;
 
-namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
+namespace DebugMenu.InGameDrawer.RendererProfilerViewer
 {
-    public class RendererProfilerDisplayer : ImmediateModeShapeDrawer
+    public class RendererProfilerViewer : ImmediateModeShapeDrawer
     {
         #region Unity API
 
@@ -14,7 +14,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
         {
             base.OnEnable();
 
-            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_SET_PASS_CASS_NAME} Count");
+            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_PASS_CALLs_NAME} Count");
             _drawCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_DRAW_CALLS_NAME} Count");
             _verticesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_VERTICES_NAME} Count");
         }
@@ -33,7 +33,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
             if (!_isShowingProfiler) return;
             
             BuildStatisticsString();
-            DisplayRendererProfiler();
+            Display();
         }
 
         #endregion
@@ -42,12 +42,12 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
         #region Main
 
         [DebugMenu("Settings/Performances/Renderer Profiler")]
-        public static void ToggleRendererProfilerDisplay()
+        public static void ToggleDisplay()
         {
             _isShowingProfiler = !_isShowingProfiler;
         }
 
-        private void DisplayRendererProfiler()
+        private void Display()
         {
             Camera camera = Camera.main;
             using (Draw.Command(camera))
@@ -65,7 +65,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
             var stringBuilder = new StringBuilder(500);
             if (_passCallsRecorder.Valid)
             {
-                stringBuilder.AppendLine($"{_SET_PASS_CASS_NAME}: {_passCallsRecorder.LastValue}");
+                stringBuilder.AppendLine($"{_PASS_CALLs_NAME}: {_passCallsRecorder.LastValue}");
             }
 
             if (_drawCallsRecorder.Valid)
@@ -97,7 +97,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerDisplayer
 
         #region Constants
             
-        private const string _SET_PASS_CASS_NAME = "SetPass Calls";
+        private const string _PASS_CALLs_NAME = "SetPass Calls";
         private const string _DRAW_CALLS_NAME = "Draw Calls";
         private const string _VERTICES_NAME = "Vertices";
 

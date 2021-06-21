@@ -1,5 +1,5 @@
 {
-    "name": "DebugMenu.InGameDrawer.RendererProfilerDisplayer",
+    "name": "DebugMenu.InGameDrawer.FPSViewer",
     "rootNamespace": "",
     "references": [
         "GUID:13a6fdc14ca9df84eb8019bc66fa9e5d",
