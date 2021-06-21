@@ -2,7 +2,7 @@ using UnityEngine;
 using Shapes;
 using DebugAttribute;
 
-namespace DebugMenu.InGameDrawer.FPSViewer
+namespace DebugMenu.InGameDrawer.Runtime.FPSViewer
 {
     public class FPSViewer : ImmediateModeShapeDrawer
     {

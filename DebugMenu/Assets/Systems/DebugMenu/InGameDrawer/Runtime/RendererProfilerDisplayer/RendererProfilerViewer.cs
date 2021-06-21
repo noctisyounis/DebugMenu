@@ -14,7 +14,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
         {
             base.OnEnable();
 
-            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_PASS_CALLs_NAME} Count");
+            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_PASS_CALLS_NAME} Count");
             _drawCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_DRAW_CALLS_NAME} Count");
             _verticesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_VERTICES_NAME} Count");
         }
@@ -65,7 +65,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
             var stringBuilder = new StringBuilder(500);
             if (_passCallsRecorder.Valid)
             {
-                stringBuilder.AppendLine($"{_PASS_CALLs_NAME}: {_passCallsRecorder.LastValue}");
+                stringBuilder.AppendLine($"{_PASS_CALLS_NAME}: {_passCallsRecorder.LastValue}");
             }
 
             if (_drawCallsRecorder.Valid)
@@ -97,7 +97,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
 
         #region Constants
             
-        private const string _PASS_CALLs_NAME = "SetPass Calls";
+        private const string _PASS_CALLS_NAME = "SetPass Calls";
         private const string _DRAW_CALLS_NAME = "Draw Calls";
         private const string _VERTICES_NAME = "Vertices";
 
