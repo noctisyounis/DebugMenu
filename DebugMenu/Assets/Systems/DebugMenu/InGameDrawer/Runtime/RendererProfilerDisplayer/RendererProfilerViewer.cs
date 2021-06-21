@@ -8,25 +8,7 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
 {
     public class RendererProfilerViewer : ImmediateModeShapeDrawer
     {
-        #region Unity API
-
-        public override void OnEnable() 
-        {
-            base.OnEnable();
-
-            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_PASS_CALLS_NAME} Count");
-            _drawCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_DRAW_CALLS_NAME} Count");
-            _verticesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_VERTICES_NAME} Count");
-        }
-
-        public override void OnDisable() 
-        {
-            base.OnDisable();
-
-            _passCallsRecorder.Dispose();
-            _drawCallsRecorder.Dispose();
-            _verticesRecorder.Dispose();
-        }
+        #region Unity API               
 
         private void Update()
         {
@@ -45,6 +27,14 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
         public static void ToggleDisplay()
         {
             _isShowingProfiler = !_isShowingProfiler;
+            if (_isShowingProfiler)
+            {
+                StartRecords();
+            }
+            else
+            {
+                DisposeRecords();
+            }
         }
 
         private void Display()
@@ -81,6 +71,20 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
             _statsText = stringBuilder.ToString();
         }
 
+        private static void StartRecords()
+        {
+            _passCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_PASS_CALLS_NAME} Count");
+            _drawCallsRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_DRAW_CALLS_NAME} Count");
+            _verticesRecorder = ProfilerRecorder.StartNew(ProfilerCategory.Render, $"{_VERTICES_NAME} Count");
+        }
+
+        private static void DisposeRecords()
+        {
+            _passCallsRecorder.Dispose();
+            _drawCallsRecorder.Dispose();
+            _verticesRecorder.Dispose();
+        }
+
         #endregion
 
 
@@ -88,9 +92,9 @@ namespace DebugMenu.InGameDrawer.RendererProfilerViewer
 
         private static bool _isShowingProfiler;
         private string _statsText;
-        private ProfilerRecorder _passCallsRecorder;
-        private ProfilerRecorder _drawCallsRecorder;
-        private ProfilerRecorder _verticesRecorder;
+        private static ProfilerRecorder _passCallsRecorder;
+        private static ProfilerRecorder _drawCallsRecorder;
+        private static ProfilerRecorder _verticesRecorder;
 
         #endregion
 

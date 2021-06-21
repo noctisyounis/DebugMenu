@@ -8,28 +8,7 @@ namespace DebugMenu.InGameDrawer.Runtime.RenderCountProfiler
 {
     public class RenderCountProfiler : ImmediateModeShapeDrawer
     {
-        #region Unity API
-
-        public override void OnEnable()
-        {
-            base.OnEnable();
-
-            _batchesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Batches Count");
-            _renderTexturesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Render Textures Count");
-            _shadowCastersCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Shadow Casters Count");
-            _indexBufferUploadInFrameCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Index Buffer Upload In Frame Count");
-
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
-
-            _batchesCount.Dispose();
-            _renderTexturesCount.Dispose();
-            _shadowCastersCount.Dispose();
-            _indexBufferUploadInFrameCount.Dispose();
-        }
+        #region Unity API        
 
         private void Update()
         {            
@@ -42,12 +21,20 @@ namespace DebugMenu.InGameDrawer.Runtime.RenderCountProfiler
         #endregion
 
 
-        #region Utils
+        #region Main
 
         [DebugMenu("Settings/Performances/GPU Memory Counter")]
         public static void ToggleDisplay()
         {
             _isShowingProfiler = !_isShowingProfiler;
+            if (_isShowingProfiler)
+            {
+                StartRecords();
+            }
+            else
+            {
+                DisposeRecords();
+            }
         }
 
         private static void Display()
@@ -87,6 +74,22 @@ namespace DebugMenu.InGameDrawer.Runtime.RenderCountProfiler
             }            
 
             _statsText = stringBuilder.ToString();
+        }
+
+        private static void StartRecords()
+        {
+            _batchesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Batches Count");
+            _renderTexturesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Render Textures Count");
+            _shadowCastersCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Shadow Casters Count");
+            _indexBufferUploadInFrameCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Index Buffer Upload In Frame Count");
+        }
+
+        private static void DisposeRecords()
+        {
+            _batchesCount.Dispose();
+            _renderTexturesCount.Dispose();
+            _shadowCastersCount.Dispose();
+            _indexBufferUploadInFrameCount.Dispose();
         }
 
         #endregion
