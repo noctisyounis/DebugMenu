@@ -1363,6 +1363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useCullingMasks: 0
+  m_refreshIntervalInSeconds: 0.5
 --- !u!114 &2087904324
 MonoBehaviour:
   m_ObjectHideFlags: 0
