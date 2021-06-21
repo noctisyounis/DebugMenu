@@ -124,10 +124,6 @@ namespace DebugMenu.InGameDrawer.MemoryProfiler
         private static StringBuilder _stringBuilder;
         private static bool _isShowingProfiler;
         private static string _statsText;
-        private static ProfilerRecorder _totalReservedMemoryRecorder;
-        private static ProfilerRecorder _gcReservedMemoryRecorder;
-        private static ProfilerRecorder _textureMemoryRecorder;
-        private static ProfilerRecorder _meshMemoryRecorder;
         private static Dictionary<string, ProfilerRecorder> _profilerRecorders;
 
         #endregion
