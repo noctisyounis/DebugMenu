@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +5,12 @@ namespace DebugAttribute
 {
     public class MergeableDictionary<TKey, TValue> : Dictionary<TKey, TValue>
     {
+
+        #region Publics Methods
+
+        /// <summary>
+        /// Merge the value and add it in the mergeable Dictionnary
+        /// </summary>
         public void Merge(Dictionary<TKey, TValue> other)
         {
             foreach (var item in other)
@@ -19,5 +24,7 @@ namespace DebugAttribute
                 }
             }
         }
+
+        #endregion
     }
 }
