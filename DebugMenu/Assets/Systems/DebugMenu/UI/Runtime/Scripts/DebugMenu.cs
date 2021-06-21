@@ -11,26 +11,6 @@ namespace DebugUI
 
         public static List<Button> m_menuDebugButton = new List<Button>();
         public int m_depth;
-        public List<string> Paths { get; set; }
-
-        public string Title
-        {
-            get => _headerTitle.text;
-
-            set
-            {
-                _headerTitle.text = value;
-            }
-
-        }
-
-        public string ParentPath
-        {
-            get => _parent;
-            set => _parent = value;
-        }
-
-
         [SerializeField]
         private Text _headerTitle;
         [SerializeField]
@@ -41,11 +21,27 @@ namespace DebugUI
         private RectTransform _parentMenuButton;
         [SerializeField]
         private RectTransform _mask;
-
         [SerializeField]
         private float _textSpacing;
 
-        #endregion
+        public List<string> Paths { get; set; }
+        public string Title
+        {
+            get => _headerTitle.text;
+
+            set
+            {
+                _headerTitle.text = value;
+            }
+        }
+
+        public string ParentPath
+        {
+            get => _parent;
+            set => _parent = value;
+        }
+
+        #endregion Exposed
 
 
         #region Unity API
@@ -60,7 +56,7 @@ namespace DebugUI
             EventSystem.current.SetSelectedGameObject(null);
         }
 
-        #endregion
+        #endregion Unity API
 
 
         #region Main
@@ -78,7 +74,7 @@ namespace DebugUI
             DebugMenuRoot.m_instance.TryDisplayPanel(ParentPath);
         }
 
-        #endregion
+        #endregion Main
 
 
         #region Utils
@@ -150,15 +146,14 @@ namespace DebugUI
             return result;
         }
 
-        #endregion
+        #endregion Utils
 
 
         #region Private
 
         private string _parent;
-
         private bool _isGenerated;
 
-        #endregion
+        #endregion Private
     }
 }

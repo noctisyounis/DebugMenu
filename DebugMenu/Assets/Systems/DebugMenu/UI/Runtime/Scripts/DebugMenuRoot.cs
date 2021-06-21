@@ -10,19 +10,18 @@ namespace DebugUI
 
         private string[] testArray = new string[] { "Gizmo/Afficher/Collider", "FrameRate", "Options Characters/Heal", "Options Characters/Boosts", "Quitter" };
 
-        #endregion
+        #endregion Testing
 
 
         #region Exposed
 
         public static DebugMenuRoot m_instance;
-
         [SerializeField]
         private string _debugMenuName;
         [SerializeField]
         private RectTransform _debugMenuPanel;
 
-        #endregion
+        #endregion Exposed
 
 
         #region Unity API
@@ -34,7 +33,7 @@ namespace DebugUI
             StartGenerate();
         }
 
-        #endregion
+        #endregion Unity API
 
 
         #region Main
@@ -105,18 +104,18 @@ namespace DebugUI
             _menus[path].gameObject.SetActive(true);
         }
 
+        public void InvokeMethod(string path)
+        {
+            Debug.Log($"Action At {path}");
+            DebugAttributeRegistry.InvokeMethod(UnlinkPathFromRoot(path));
+        }
+
         private void HidePanels()
         {
             foreach (var item in _menus)
             {
                 item.Value.gameObject.SetActive(false);
             }
-        }
-
-        public void InvokeMethod(string path)
-        {
-            Debug.Log($"Action At {path}");
-            DebugAttributeRegistry.InvokeMethod(UnlinkPathFromRoot(path));
         }
 
         private void StartGenerate()
@@ -131,7 +130,7 @@ namespace DebugUI
             }
         }
 
-        #endregion
+        #endregion Main
 
 
         #region Utils
@@ -154,15 +153,14 @@ namespace DebugUI
             return result;
         }
 
-        #endregion
+        #endregion Utils
 
 
         #region Private
 
         private Dictionary<string, DebugMenu> _menus;
-
         private bool _wasGenerate;
 
-        #endregion
+        #endregion Private
     }
 }

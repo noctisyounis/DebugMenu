@@ -8,15 +8,14 @@ namespace DebugUI
     {
         #region Exposed
 
-        public DebugMenu Owner { get; set; }
         public string m_path;
-
         [SerializeField]
         private Image _arrowHover;
         [SerializeField]
         private RectTransform _parentButton;
+        public DebugMenu Owner { get; set; }
 
-        #endregion
+        #endregion Exposed
 
 
         #region Unity API
@@ -48,7 +47,7 @@ namespace DebugUI
             DebugMenu.m_menuDebugButton.Remove(GetComponent<Button>());
         }
 
-        #endregion
+        #endregion Unity API
 
 
         #region Main
@@ -63,7 +62,7 @@ namespace DebugUI
             Owner.ReturnToParent();
         }
 
-        #endregion
+        #endregion Main
 
 
         #region Utils
@@ -78,13 +77,6 @@ namespace DebugUI
             _arrowHover.gameObject.SetActive(false);
         }
 
-        #endregion
-
-
-        #region Private
-
-        private Image _currentInstantiate;
-
-        #endregion
+        #endregion Utils
     }
 }

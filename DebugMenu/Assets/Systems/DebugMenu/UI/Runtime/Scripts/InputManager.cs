@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +10,7 @@ namespace DebugUI
         public UnityEvent OnTripleClick;
         public UnityEvent OnHideDebugMenu;
 
-        #endregion
+        #endregion Exposed
 
 
         #region Unity API
@@ -23,7 +21,8 @@ namespace DebugUI
             HideDebugMenu();
         }
 
-        #endregion
+        #endregion Unity API
+
 
         #region Utils
 
@@ -67,7 +66,7 @@ namespace DebugUI
         }
 
 
-        #endregion
+        #endregion Utils
 
 
         #region Privates
@@ -76,6 +75,6 @@ namespace DebugUI
         private float _buttonPressSpeed = 0.4f;
         private float _lastPressTime = -10f;
 
-        #endregion
+        #endregion Privates
     }
 }

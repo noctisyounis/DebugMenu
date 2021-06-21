@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DebugMenuVisibility : MonoBehaviour
+namespace DebugUI
 {
-    #region Main
-
-    public void Hide()
+    public class DebugMenuVisibility : MonoBehaviour
     {
-        Debug.Log("Hide");
-        gameObject.SetActive(false);
-    }
+        #region Main
 
-    public void Show()
-    {
-        Debug.Log("Show");
-        gameObject.SetActive(true);
-    }
+        public void Hide()
+        {
+            Debug.Log("Hide");
+            gameObject.SetActive(false);
+        }
 
-    #endregion
+        public void Show()
+        {
+            Debug.Log("Show");
+            gameObject.SetActive(true);
+        }
+
+        #endregion Main
+    }
 }

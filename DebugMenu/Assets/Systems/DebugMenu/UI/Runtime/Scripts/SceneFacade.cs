@@ -1,33 +1,37 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneFacade : MonoBehaviour
+namespace DebugUI
 {
-
-    #region private
-
-    private bool isLoaded;
-    #endregion
-    #region Main
-
-    public void LoadSceneAdditive(string sceneName)
+    public class SceneFacade : MonoBehaviour
     {
-        if(!isLoaded)
-        {
-            SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
-            isLoaded = true;
-        }
-        
-    }
+        #region Main
 
-    public void RemoveAdditiveScene(string sceneName)
-    {
-        if (isLoaded)
+        public void LoadSceneAdditive(string sceneName)
         {
-        SceneManager.UnloadSceneAsync(sceneName);
-            isLoaded = false;
+            if (!isLoaded)
+            {
+                SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+                isLoaded = true;
+            }
         }
-    }
 
-    #endregion
+        public void RemoveAdditiveScene(string sceneName)
+        {
+            if (isLoaded)
+            {
+                SceneManager.UnloadSceneAsync(sceneName);
+                isLoaded = false;
+            }
+        }
+
+        #endregion Main
+
+
+        #region private
+
+        private bool isLoaded;
+
+        #endregion private
+    }
 }
