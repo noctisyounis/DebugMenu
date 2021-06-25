@@ -48,6 +48,15 @@ namespace DebugMenu.InGameDrawer.MemoryProfiler
         public static void ToggleShowProfiler()
         {
             _isShowingProfiler = !_isShowingProfiler;
+
+            if(_isShowingProfiler)
+            {
+                EnableAllProfilers();
+            }
+            else
+            {
+                DisableAllProfilers();
+            }
         }
 
         private static void ShowMemoryProfiler()
@@ -70,7 +79,7 @@ namespace DebugMenu.InGameDrawer.MemoryProfiler
         {
             if(_profilerRecorders.ContainsKey(statName)) return;
 
-            var profiler = ProfilerRecorder.StartNew(ProfilerCategory.Memory, statName);
+            var profiler = new ProfilerRecorder(ProfilerCategory.Memory, statName);
             _profilerRecorders.Add(statName, profiler);
         }
 
@@ -79,6 +88,22 @@ namespace DebugMenu.InGameDrawer.MemoryProfiler
             if(profiler.Valid)
             {
                 _stringBuilder.AppendLine($"{statName}: {ConvertByteToMegaByte(profiler.LastValue):0.00} MB");
+            }
+        }
+
+        private static void EnableAllProfilers()
+        {
+            foreach (var item in _profilerRecorders)
+            {
+                item.Value.Start();
+            }
+        }
+
+        private static void DisableAllProfilers()
+        {
+            foreach (var item in _profilerRecorders)
+            {
+                item.Value.Stop();
             }
         }
 
@@ -99,10 +124,6 @@ namespace DebugMenu.InGameDrawer.MemoryProfiler
         private static StringBuilder _stringBuilder;
         private static bool _isShowingProfiler;
         private static string _statsText;
-        private static ProfilerRecorder _totalReservedMemoryRecorder;
-        private static ProfilerRecorder _gcReservedMemoryRecorder;
-        private static ProfilerRecorder _textureMemoryRecorder;
-        private static ProfilerRecorder _meshMemoryRecorder;
         private static Dictionary<string, ProfilerRecorder> _profilerRecorders;
 
         #endregion

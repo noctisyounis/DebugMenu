@@ -4,64 +4,106 @@ using System.Text;
 using Shapes;
 using DebugAttribute;
 
-public class RenderCountProfiler : ImmediateModeShapeDrawer
+namespace DebugMenu.InGameDrawer.Runtime.RenderCountProfiler
 {
-    #region Unity API
-
-    private void Update()
-    {       
-        var sb = new StringBuilder(500);
-        if (_batchesCount.Valid)
-            sb.AppendLine($"Batches Count: {_batchesCount.LastValue}");
-        if (_renderTexturesCount.Valid)
-            sb.AppendLine($"Render Textures Count: {_renderTexturesCount.LastValue}");
-        if (_indexBufferUploadInFrameCount.Valid)
-            sb.AppendLine($"Index Buffer Upload In Frame Count: {_indexBufferUploadInFrameCount.LastValue}");
-        if (_shadowCastersCount.Valid)
-            sb.AppendLine($"Shadow Casters Count: {_shadowCastersCount.LastValue}");
-        _statsText = sb.ToString();
-        if (!_isShowingProfiler) return;
-        ShowCountProfiler();
-    }
-
-    #endregion
-
-
-    #region Utils
-
-    [DebugMenu("Settings/Performances/Batches-Render Count Profiler")]
-    public static void SetShowProfiler()
+    public class RenderCountProfiler : ImmediateModeShapeDrawer
     {
-        _isShowingProfiler = !_isShowingProfiler;
-    }
+        #region Unity API        
 
-    private static void ShowCountProfiler()
-    {       
-        _batchesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Batches Count");
-        _renderTexturesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Render Textures Count");
-        _indexBufferUploadInFrameCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Index Buffer Upload In Frame Count");
-        _shadowCastersCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Shadow Casters Count");
+        private void Update()
+        {            
+            if (!_isShowingProfiler) return;
 
-        Camera cam = Camera.main;
-        using (Draw.Command(cam))
+            BuildStatisticsString();
+            Display();
+        }
+
+        #endregion
+
+
+        #region Main
+
+        [DebugMenu("Settings/Performances/GPU Memory Counter")]
+        public static void ToggleDisplay()
         {
-            var pos = cam.ScreenToViewportPoint(new Vector3(cam.pixelWidth - 20, cam.pixelHeight - 20, 1));
-            var goodPos = cam.ViewportToWorldPoint(pos);
-            Draw.Text(goodPos, cam.transform.forward, _statsText, TextAlign.TopRight, 0.5f, Color.red);
-        }     
+            _isShowingProfiler = !_isShowingProfiler;
+            if (_isShowingProfiler)
+            {
+                StartRecords();
+            }
+            else
+            {
+                DisposeRecords();
+            }
+        }
+
+        private static void Display()
+        {            
+            Camera camera = Camera.main;
+            using (Draw.Command(camera))
+            {
+                var screenPosition = new Vector3(camera.pixelWidth - 20, camera.pixelHeight - 20, 1);
+                var viewportPosition = camera.ScreenToViewportPoint(screenPosition);
+                var worldPosition = camera.ViewportToWorldPoint(viewportPosition);
+
+                Draw.Text(worldPosition, camera.transform.forward, _statsText, TextAlign.TopRight, 0.5f, Color.red);
+            }
+        }
+
+        private void BuildStatisticsString()
+        {
+            var stringBuilder = new StringBuilder(500);
+            if (_batchesCount.Valid)
+            {
+                stringBuilder.AppendLine($"Batches Count: {_batchesCount.LastValue}");
+            }
+
+            if (_renderTexturesCount.Valid)
+            {
+                stringBuilder.AppendLine($"Render Textures Count: {_renderTexturesCount.LastValue}");
+            }
+
+            if (_shadowCastersCount.Valid)
+            {
+                stringBuilder.AppendLine($"Shadow Casters Count: {_shadowCastersCount.LastValue}");
+            }
+
+            if (_indexBufferUploadInFrameCount.Valid)
+            {
+                stringBuilder.AppendLine($"Index Buffer Upload In Frame Count: {_indexBufferUploadInFrameCount.LastValue}");
+            }            
+
+            _statsText = stringBuilder.ToString();
+        }
+
+        private static void StartRecords()
+        {
+            _batchesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Batches Count");
+            _renderTexturesCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Render Textures Count");
+            _shadowCastersCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Shadow Casters Count");
+            _indexBufferUploadInFrameCount = ProfilerRecorder.StartNew(ProfilerCategory.Memory, "Index Buffer Upload In Frame Count");
+        }
+
+        private static void DisposeRecords()
+        {
+            _batchesCount.Dispose();
+            _renderTexturesCount.Dispose();
+            _shadowCastersCount.Dispose();
+            _indexBufferUploadInFrameCount.Dispose();
+        }
+
+        #endregion
+
+
+        #region Private and Protected
+
+        private static bool _isShowingProfiler;
+        private static string _statsText;
+        private static ProfilerRecorder _batchesCount;
+        private static ProfilerRecorder _renderTexturesCount;
+        private static ProfilerRecorder _shadowCastersCount;
+        private static ProfilerRecorder _indexBufferUploadInFrameCount;
+
+        #endregion
     }
-
-    #endregion    
-
-
-    #region Private and Protected
-
-    private static bool _isShowingProfiler;
-    private static string _statsText;
-    private static ProfilerRecorder _batchesCount;
-    private static ProfilerRecorder _renderTexturesCount;
-    private static ProfilerRecorder _indexBufferUploadInFrameCount;
-    private static ProfilerRecorder _shadowCastersCount;
-
-    #endregion
 }

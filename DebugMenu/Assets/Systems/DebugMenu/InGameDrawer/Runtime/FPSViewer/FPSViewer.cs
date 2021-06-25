@@ -2,20 +2,38 @@ using UnityEngine;
 using Shapes;
 using DebugAttribute;
 
-namespace DebugMenu.InGameDrawer.FPSViewer
+namespace DebugMenu.InGameDrawer.Runtime.FPSViewer
 {
     public class FPSViewer : ImmediateModeShapeDrawer
     {
+        #region Exposed
+
+        [Range(0.1f, 1.5f)]
+        public float m_refreshIntervalInSeconds;
+
+        #endregion
+
+
         #region Unity API
+
+        private void Awake()
+        {
+            _timeOfLastDisplayUpdate = Time.time;
+        }
 
         private void Update()
         {
             if (!_isShowingFps) return;
 
-            RefreshFPS();
+            if (RefreshTimerReached())
+            {
+                RefreshFPS();
+                _timeOfLastDisplayUpdate = Time.time;
+            }
+
             DisplayFPS();
         }
-
+                
         #endregion
 
 
@@ -48,10 +66,21 @@ namespace DebugMenu.InGameDrawer.FPSViewer
         #endregion
 
 
+        #region Utils
+
+        private bool RefreshTimerReached()
+        {
+            return Time.time > _timeOfLastDisplayUpdate + m_refreshIntervalInSeconds;
+        }
+
+        #endregion
+                     
+
         #region Private Fields
 
         private static bool _isShowingFps;
         private int _fps;
+        private float _timeOfLastDisplayUpdate;
 
         #endregion
     }    
