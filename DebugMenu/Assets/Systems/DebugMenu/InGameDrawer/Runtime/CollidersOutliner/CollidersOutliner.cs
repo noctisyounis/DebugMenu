@@ -14,6 +14,8 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
             _boxColliders = new List<BoxCollider>();
             _sphereColliders = new List<SphereCollider>();
             _capsuleColliders = new List<CapsuleCollider>();
+            _meshColliders = new List<MeshCollider>();
+
             GetTypeOfColliders();
             SetShapesColor(new Color(0, 1, 0, 0.2f));
             SetShapesBlendMode(ShapesBlendMode.Transparent);
@@ -37,11 +39,13 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
 
 
         #region Utils
+
         private static void RefreshAllCollidersLists()
         {
             _boxColliders.Clear();
             _sphereColliders.Clear();
             _capsuleColliders.Clear();
+            _meshColliders.Clear();
             GetTypeOfColliders();
         }
 
@@ -65,19 +69,23 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
 
         private static void GetTypeOfColliders()
         {
-            foreach (var element in GetAllCollidersInScene())
+            foreach (var collider in GetAllCollidersInScene())
             {
-                if (element.GetType() == typeof(BoxCollider))
+                if (collider.GetType() == typeof(BoxCollider))
                 {
-                    _boxColliders.Add((BoxCollider) element);
+                    _boxColliders.Add((BoxCollider) collider);
                 }
-                else if (element.GetType() == typeof(SphereCollider))
+                else if (collider.GetType() == typeof(SphereCollider))
                 {
-                    _sphereColliders.Add((SphereCollider) element);
+                    _sphereColliders.Add((SphereCollider) collider);
                 }
-                else if (element.GetType() == typeof(CapsuleCollider))
+                else if (collider.GetType() == typeof(CapsuleCollider))
                 {
-                    _capsuleColliders.Add((CapsuleCollider) element);
+                    _capsuleColliders.Add((CapsuleCollider) collider);
+                }
+                else if (collider.GetType() == typeof(MeshCollider))
+                {
+                    _meshColliders.Add((MeshCollider) collider);
                 }
             }
         }
@@ -100,48 +108,86 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
         {
             Camera cam = Camera.main;
 
-
             using (Draw.Command(cam))
             {
                 DisplayAllBoxCollidersInScene();
                 DisplayAllSphereCollidersInScene();
                 DisplayAllCapsuleCollidersInScene();
+                DisplayAllMeshCollidersInScene();
             }
         }
 
         public static void DisplayAllBoxCollidersInScene()
         {
-            foreach (var element in _boxColliders)
+            foreach (var boxCollider in _boxColliders)
             {
-                Draw.Cuboid(element.bounds.center, element.transform.rotation, element.bounds.size);
+                var boxSize = new Vector3(boxCollider.size.x * boxCollider.transform.localScale.x,
+                                          boxCollider.size.y * boxCollider.transform.localScale.y,
+                                          boxCollider.size.z * boxCollider.transform.localScale.z);
+
+                Draw.Cuboid(boxCollider.bounds.center, boxCollider.transform.rotation, boxSize);
             }
         }
 
         public static void DisplayAllSphereCollidersInScene()
         {
-            foreach (var element in _sphereColliders)
+            foreach (var sphereCollider in _sphereColliders)
             {
-                Draw.Sphere(element.bounds.center, element.radius);
+                Draw.Sphere(sphereCollider.bounds.center, sphereCollider.bounds.extents.x);
             }
         }
 
         public static void DisplayAllCapsuleCollidersInScene()
         {
-            foreach (var element in _capsuleColliders)
+            foreach (var capsuleCollider in _capsuleColliders)
             {
-                Draw.Cuboid(element.bounds.center, element.transform.rotation,
-                    new Vector3(element.radius * 2, element.height,
-                        element.radius * 2));
+                var localScale = capsuleCollider.transform.localScale;
+                var maxLocalScaleAxis = Mathf.Max(localScale.x, localScale.z);
+
+                var capsuleSize = new Vector3(capsuleCollider.radius * maxLocalScaleAxis * 2,
+                                              capsuleCollider.height * localScale.y,
+                                              capsuleCollider.radius * maxLocalScaleAxis * 2);
+
+                Draw.Cuboid(capsuleCollider.bounds.center,
+                            capsuleCollider.transform.rotation,
+                            capsuleSize);
+            }
+        }
+
+        public static void DisplayAllMeshCollidersInScene()
+        {
+            foreach (var meshCollider in _meshColliders)
+            {
+                if (!meshCollider.sharedMesh.isReadable) return;
+
+                var vertexPath = new PolylinePath();
+                var position = meshCollider.bounds.center;
+                var verticesPosition = meshCollider.sharedMesh.vertices;
+
+                for (int i = 0; i < verticesPosition.Length; i++)
+                {
+                    verticesPosition[i] += position;
+                    verticesPosition[i].x *= meshCollider.transform.localScale.x;
+                    verticesPosition[i].y *= meshCollider.transform.localScale.y;
+                    verticesPosition[i].z *= meshCollider.transform.localScale.z;
+                }
+
+
+                vertexPath.AddPoints(verticesPosition);
+
+                Draw.Polyline(vertexPath);
             }
         }
 
         #endregion
 
 
-        #region private Members
+        #region Private And Protected Members
+
         private static List<BoxCollider> _boxColliders;
         private static List<SphereCollider> _sphereColliders;
         private static List<CapsuleCollider> _capsuleColliders;
+        private static List<MeshCollider> _meshColliders;
         private static bool _state;
 
         #endregion
