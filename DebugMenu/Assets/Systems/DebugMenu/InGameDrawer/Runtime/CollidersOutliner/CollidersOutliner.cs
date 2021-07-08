@@ -161,17 +161,22 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
                 if (!meshCollider.sharedMesh.isReadable) return;
 
                 var vertexPath = new PolylinePath();
-                var position = meshCollider.bounds.center;
+                var center = meshCollider.bounds.center;
                 var verticesPosition = meshCollider.sharedMesh.vertices;
 
                 for (int i = 0; i < verticesPosition.Length; i++)
                 {
-                    verticesPosition[i] += position;
-                    verticesPosition[i].x *= meshCollider.transform.localScale.x;
-                    verticesPosition[i].y *= meshCollider.transform.localScale.y;
-                    verticesPosition[i].z *= meshCollider.transform.localScale.z;
-                }
+                    verticesPosition[i] += center;
 
+                    var newRotation = new Quaternion();
+                    newRotation.eulerAngles = meshCollider.transform.rotation.eulerAngles;
+                    verticesPosition[i] = newRotation * (verticesPosition[i] - center) + center;
+                    
+
+                    //verticesPosition[i].x *= meshCollider.transform.localScale.x;
+                    //verticesPosition[i].y *= meshCollider.transform.localScale.y;
+                    //verticesPosition[i].z *= meshCollider.transform.localScale.z;
+                }
 
                 vertexPath.AddPoints(verticesPosition);
 
