@@ -159,6 +159,7 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
                 DisplayAllBoxColliders2DInScene();
                 DisplayAllCircleColliders2DInScene();
                 DisplayAllPolygoneColliders2DInScene();
+                DisplayAllCapsuleColliders2DInScene();
                 DisplayAllBoxCollidersInScene();
                 DisplayAllSphereCollidersInScene();
                 DisplayAllCapsuleCollidersInScene();
@@ -170,10 +171,17 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
         {
             foreach (var boxCollider2D in _boxColliders2D)
             {
+                var transform = boxCollider2D.transform;
                 var rotation = new Quaternion();
-                rotation.eulerAngles = new Vector3(0, 0, boxCollider2D.transform.rotation.eulerAngles.z);
+                rotation.eulerAngles = new Vector3(0, 0, transform.rotation.eulerAngles.z);
 
                 Vector2 size = boxCollider2D.size;
+
+                size.x *= transform.localScale.x;
+                size.y *= transform.localScale.y;
+
+                size.x += boxCollider2D.edgeRadius * 2;
+                size.y += boxCollider2D.edgeRadius * 2;
 
                 Draw.Rectangle(boxCollider2D.bounds.center, rotation, size, boxCollider2D.edgeRadius);
             }
@@ -214,6 +222,30 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
                 path.AddPoints(pointsPosition);
 
                 Draw.Polyline(path, true);
+            }
+        }
+
+        public static void DisplayAllCapsuleColliders2DInScene()
+        {
+            foreach (var capsuleCollider2D in _capsuleColliders2D)
+            {
+                var transform = capsuleCollider2D.transform;
+                var rotation = new Quaternion();
+                rotation.eulerAngles = new Vector3(0, 0, transform.rotation.eulerAngles.z);
+
+                Vector2 size = capsuleCollider2D.size;
+
+                float radius = size.x + size.y;
+
+                size.x *= transform.localScale.x;
+                size.y *= transform.localScale.y;
+
+                if (size.y < size.x)
+                {
+                    size.y = size.x;
+                }
+
+                Draw.Rectangle(capsuleCollider2D.bounds.center, transform.rotation, size, radius);
             }
         }
 
@@ -298,6 +330,38 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
             var newRotation = new Quaternion();
             newRotation.eulerAngles = collider.transform.rotation.eulerAngles;
             return newRotation * (position - center) + center;
+        }
+
+        private static float ClampAxis(float rotationAxis)
+        {
+            float result = rotationAxis;
+
+            if (rotationAxis > 270)
+            {
+                result -= 270;
+            }
+            else if (rotationAxis < -270)
+            {
+                result += 270;
+            }
+            else if (rotationAxis > 180)
+            {
+                result -= 180;
+            }
+            else if (rotationAxis < -180)
+            {
+                result += 180;
+            }
+            else if (rotationAxis > 90)
+            {
+                result -= 90;
+            }
+            else if (rotationAxis < -90)
+            {
+                result += 90;
+            }
+
+            return result;
         }
 
         #endregion
