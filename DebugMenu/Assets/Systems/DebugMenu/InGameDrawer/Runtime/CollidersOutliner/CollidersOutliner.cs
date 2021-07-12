@@ -11,12 +11,17 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
 
         private void Start()
         {
+            _boxColliders2D = new List<BoxCollider2D>();
+            _circleColliders2D = new List<CircleCollider2D>();
+            _capsuleColliders2D = new List<CapsuleCollider2D>();
+            _polygonColliders2D = new List<PolygonCollider2D>();
             _boxColliders = new List<BoxCollider>();
             _sphereColliders = new List<SphereCollider>();
             _capsuleColliders = new List<CapsuleCollider>();
             _meshColliders = new List<MeshCollider>();
 
             GetTypeOfColliders();
+            GetTypeOfColliders2D();
             SetShapesColor(new Color(0, 1, 0, 0.2f));
             SetShapesBlendMode(ShapesBlendMode.Transparent);
         }
@@ -38,15 +43,20 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
         #endregion
 
 
-        #region Utils
+        #region Main
 
         private static void RefreshAllCollidersLists()
         {
+            _boxColliders2D.Clear();
+            _circleColliders2D.Clear();
+            _capsuleColliders2D.Clear();
+            _polygonColliders2D.Clear();
             _boxColliders.Clear();
             _sphereColliders.Clear();
             _capsuleColliders.Clear();
             _meshColliders.Clear();
             GetTypeOfColliders();
+            GetTypeOfColliders2D();
         }
 
         [DebugMenu("Settings/Gizmos/Show Colliders")]
@@ -59,12 +69,47 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
         {
             List<Collider> collidersInScene = new List<Collider>();
 
-            foreach (var element in Resources.FindObjectsOfTypeAll(typeof(Collider)) as Collider[])
+            foreach (var collider in Resources.FindObjectsOfTypeAll(typeof(Collider)) as Collider[])
             {
-                collidersInScene.Add(element);
+                collidersInScene.Add(collider);
             }
 
             return collidersInScene;
+        }
+
+        private static List<Collider2D> GetAllColliders2DInScene()
+        {
+            List<Collider2D> colliders2DInScene = new List<Collider2D>();
+
+            foreach (var collider2D in Resources.FindObjectsOfTypeAll(typeof(Collider2D)) as Collider2D[])
+            {
+                colliders2DInScene.Add(collider2D);
+            }
+
+            return colliders2DInScene;
+        }
+
+        private static void GetTypeOfColliders2D()
+        {
+            foreach (var collider2D in GetAllColliders2DInScene())
+            {
+                if (collider2D.GetType() == typeof(BoxCollider2D))
+                {
+                    _boxColliders2D.Add((BoxCollider2D) collider2D);
+                }
+                else if (collider2D.GetType() == typeof(CircleCollider2D))
+                {
+                    _circleColliders2D.Add((CircleCollider2D) collider2D);
+                }
+                else if (collider2D.GetType() == typeof(CapsuleCollider2D))
+                {
+                    _capsuleColliders2D.Add((CapsuleCollider2D) collider2D);
+                }
+                else if (collider2D.GetType() == typeof(PolygonCollider2D))
+                {
+                    _polygonColliders2D.Add((PolygonCollider2D) collider2D);
+                }
+            }
         }
 
         private static void GetTypeOfColliders()
@@ -104,16 +149,71 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
 
 
         #region DrawingShape
+
         public static void DisplayAllCollidersInScene()
         {
             Camera cam = Camera.main;
 
             using (Draw.Command(cam))
             {
+                DisplayAllBoxColliders2DInScene();
+                DisplayAllCircleColliders2DInScene();
+                DisplayAllPolygoneColliders2DInScene();
                 DisplayAllBoxCollidersInScene();
                 DisplayAllSphereCollidersInScene();
                 DisplayAllCapsuleCollidersInScene();
                 DisplayAllMeshCollidersInScene();
+            }
+        }
+
+        public static void DisplayAllBoxColliders2DInScene()
+        {
+            foreach (var boxCollider2D in _boxColliders2D)
+            {
+                var rotation = new Quaternion();
+                rotation.eulerAngles = new Vector3(0, 0, boxCollider2D.transform.rotation.eulerAngles.z);
+
+                Vector2 size = boxCollider2D.size;
+
+                Draw.Rectangle(boxCollider2D.bounds.center, rotation, size, boxCollider2D.edgeRadius);
+            }
+        }
+
+        public static void DisplayAllCircleColliders2DInScene()
+        {
+            foreach (var circleCollider2D in _circleColliders2D)
+            {
+                Draw.Disc(circleCollider2D.bounds.center, circleCollider2D.bounds.extents.x);
+            }
+        }
+
+        public static void DisplayAllPolygoneColliders2DInScene()
+        {
+            foreach (var polygonCollider2D in _polygonColliders2D)
+            {
+                var path = new PolylinePath();
+                var center = polygonCollider2D.transform.position;
+                var pointsPosition = new Vector3[polygonCollider2D.points.Length];
+                var points = polygonCollider2D.points;
+                var offset = polygonCollider2D.offset;
+
+                for (int i = 0; i < pointsPosition.Length; i++)
+                {
+                    pointsPosition[i] = new Vector3(points[i].x, points[i].y, 0);
+                    pointsPosition[i] += new Vector3(offset.x, offset.y, 0);
+
+                    pointsPosition[i].x *= polygonCollider2D.transform.localScale.x;
+                    pointsPosition[i].y *= polygonCollider2D.transform.localScale.y;
+                    pointsPosition[i].z *= polygonCollider2D.transform.localScale.z;
+
+                    pointsPosition[i] += center;
+
+                    pointsPosition[i] = CalculateColliderRotation(polygonCollider2D, center, pointsPosition[i]);
+                }
+
+                path.AddPoints(pointsPosition);
+
+                Draw.Polyline(path, true);
             }
         }
 
@@ -172,9 +272,7 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
 
                     verticesPosition[i] += center;
 
-                    var newRotation = new Quaternion();
-                    newRotation.eulerAngles = meshCollider.transform.rotation.eulerAngles;
-                    verticesPosition[i] = newRotation * (verticesPosition[i] - center) + center;
+                    verticesPosition[i] = CalculateColliderRotation(meshCollider, center, verticesPosition[i]);
                 }
 
                 vertexPath.AddPoints(verticesPosition);
@@ -186,8 +284,31 @@ namespace DebugMenu.InGameDrawer.CollidersOutliner
         #endregion
 
 
+        #region Utils
+
+        private static Vector3 CalculateColliderRotation(Collider collider, Vector3 center, Vector3 position)
+        {
+            var newRotation = new Quaternion();
+            newRotation.eulerAngles = collider.transform.rotation.eulerAngles;
+            return newRotation * (position - center) + center;
+        }
+
+        private static Vector3 CalculateColliderRotation(Collider2D collider, Vector3 center, Vector3 position)
+        {
+            var newRotation = new Quaternion();
+            newRotation.eulerAngles = collider.transform.rotation.eulerAngles;
+            return newRotation * (position - center) + center;
+        }
+
+        #endregion
+
+
         #region Private And Protected Members
 
+        private static List<BoxCollider2D> _boxColliders2D;
+        private static List<CircleCollider2D> _circleColliders2D;
+        private static List<CapsuleCollider2D> _capsuleColliders2D;
+        private static List<PolygonCollider2D> _polygonColliders2D;
         private static List<BoxCollider> _boxColliders;
         private static List<SphereCollider> _sphereColliders;
         private static List<CapsuleCollider> _capsuleColliders;
